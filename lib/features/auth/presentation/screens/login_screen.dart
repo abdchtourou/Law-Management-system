@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
-import '../widgets/auth_text_field.dart';
-import '../widgets/primary_button.dart';
+import '../widgets/email_field.dart';
+import '../widgets/field_label.dart';
+import '../widgets/logo_header.dart';
+import '../widgets/password_field.dart';
+import '../widgets/remember_forgot_row.dart';
+import '../widgets/submit_button.dart';
+import '../widgets/title_block.dart';
 import 'home_screen.dart';
-import 'signup_screen.dart';
 
-/// Login screen for user authentication
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -17,191 +21,96 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController(text: 'ahmedazy.uxui@gmail.com');
-  final _password = TextEditingController(text: '************');
-  bool _obscure = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   bool _rememberMe = false;
 
   @override
   void dispose() {
-    _email.dispose();
-    _password.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
+  }
+
+  void _handleLogin() {
+    if (_formKey.currentState!.validate()) {
+      context.read<AuthCubit>().signIn(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 12),
-                // Logo circle
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.black,
-                    child: const Text(
-                      'Logo',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 28),
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is AuthAuthenticated) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+            );
+          } else if (state is AuthError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-                // Title
-                Text(
-                  'أهلاً بعودتك!',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF111827),
-                    letterSpacing: .2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'ادخل البيانات التالية لنتمكن من الوصول إلى حسابك!',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B7280),
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 28),
-
-                // Email
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'البريد الإلكتروني',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF374151),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  controller: _email,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    hintText: 'name@example.com',
-                    prefixIcon: Icon(Icons.alternate_email_outlined),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'أدخل البريد الإلكتروني';
-                    final ok = RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim());
-                    return ok ? null : 'بريد إلكتروني غير صالح';
-                  },
-                ),
-                const SizedBox(height: 18),
-
-                // Password
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    'كلمة المرور',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF374151),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                TextFormField(
-                  controller: _password,
-                  obscureText: _obscure,
-                  decoration: InputDecoration(
-                    hintText: '••••••••••••',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    suffixIcon: IconButton(
-                      tooltip: _obscure ? 'إظهار' : 'إخفاء',
-                      onPressed: () => setState(() => _obscure = !_obscure),
-                      icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined),
-                    ),
-                  ),
-                  validator: (v) => (v == null || v.isEmpty) ? 'أدخل كلمة المرور' : null,
-                ),
-                const SizedBox(height: 14),
-
-                // Remember + Forgot
-                Row(
+          return Directionality(
+            textDirection: TextDirection.rtl,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.fromLTRB(16.w, 130.h, 16.w, 24.h),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // تذكّرني
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          visualDensity: VisualDensity.compact,
-                          onChanged: (v) => setState(() => _rememberMe = v ?? false),
-                        ),
-                        const SizedBox(width: 4),
-                        const Text(
-                          'تذكّرني',
-                          style: TextStyle(fontSize: 14, color: Color(0xFF374151)),
-                        ),
-                      ],
+                    const LogoHeader(),
+                    SizedBox(height: 8.h),
+                    const TitleBlock(),
+                    SizedBox(height: 35.h),
+                    FieldLabel(text: 'البريد الإلكتروني', bottom: 11.h),
+                    EmailField(
+                      controller: _emailController,
+                      enabled: !isLoading,
                     ),
-                    const Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        // TODO: navigate to reset page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('ميزة استرجاع كلمة المرور (UI فقط).')),
-                        );
-                      },
-                      child: const Text('نسيت كلمة المرور؟', style: TextStyle(fontSize: 14)),
+                    SizedBox(height: 18.h),
+                    const FieldLabel(text: 'كلمة المرور', bottom: 8),
+                    PasswordField(
+                      controller: _passwordController,
+                      enabled: !isLoading,
+                    ),
+                    SizedBox(height: 35.h),
+                    RememberForgotRow(
+                      rememberMe: _rememberMe,
+                      onChanged: (t) {},
+                      onForgotPressed: isLoading
+                          ? null
+                          : () {
+                              // TODO: navigate to reset password
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('واجهة استعادة كلمة المرور')),
+                              );
+                            },
+                    ),
+                    SizedBox(height: 24.h),
+                    SubmitButton(
+                      isLoading: isLoading,
+                      onPressed: isLoading ? null : _handleLogin,
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
-
-                // Submit button
-                SizedBox(
-                  width: w,
-                  height: 56,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      if (_formKey.currentState?.validate() ?? false) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('تسجيل الدخول${_rememberMe ? ' (مع التذكّر)' : ''}'),
-                          ),
-                        );
-                      }
-                    },
-                    child: const Text(
-                      'تسجيل الدخول',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

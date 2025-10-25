@@ -5,7 +5,6 @@ import '../../../../core/usecases/usecase.dart';
 import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
-/// Use case for signing up a new user
 class SignUp implements UseCase<UserEntity, SignUpParams> {
   final AuthRepository repository;
 

@@ -6,7 +6,6 @@ import '../../domain/usecases/sign_out.dart';
 import '../../domain/usecases/sign_up.dart';
 import 'auth_state.dart';
 
-/// Cubit for managing authentication state
 class AuthCubit extends Cubit<AuthState> {
   final SignIn signInUseCase;
   final SignUp signUpUseCase;
@@ -20,7 +19,6 @@ class AuthCubit extends Cubit<AuthState> {
     required this.getCurrentUserUseCase,
   }) : super(AuthInitial());
 
-  /// Signs in a user with email and password
   Future<void> signIn({
     required String email,
     required String password,
@@ -37,7 +35,6 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  /// Signs up a new user
   Future<void> signUp({
     required String email,
     required String password,
@@ -55,7 +52,6 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  /// Signs out the current user
   Future<void> signOut() async {
     emit(AuthLoading());
 
@@ -85,9 +81,3 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 }
-/*
-
-
-container column row children
-
-*/
