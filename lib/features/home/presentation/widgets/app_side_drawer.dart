@@ -15,151 +15,154 @@ class AppSideDrawer extends StatelessWidget {
       width: 320,
       backgroundColor: Colors.white,
       child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
-          children: [
-            // Header (avatar + name + role)
-            const Row(
-              children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundImage: AssetImage('assets/avatars/a1.jpg'),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Azunyan U. Wu',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 16,
+        child: Directionality(
+          textDirection: TextDirection.rtl,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
+            children: [
+              // Header (avatar + name + role)
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 22,
+                    backgroundImage: AssetImage('assets/avatars/a1.jpg'),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Azunyan U. Wu',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 2),
-                      Text(
-                        'Basic Member',
-                        style: TextStyle(
-                          color: Color(0xFF94A3B8),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                        SizedBox(height: 2),
+                        Text(
+                          'Basic Member',
+                          style: TextStyle(
+                            color: Color(0xFF94A3B8),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                  Icon(Icons.wb_sunny_outlined, color: grey),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Search
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'نص مقترح',
+                  suffixIcon: const Icon(Icons.search, color: grey),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: cardBorder),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: cardBorder),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
                   ),
                 ),
-                Icon(Icons.wb_sunny_outlined, color: grey),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Search
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'نص مقترح',
-                suffixIcon: const Icon(Icons.search, color: grey),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: cardBorder),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: cardBorder),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
-                ),
               ),
-            ),
 
-            const SizedBox(height: 18),
-            const _SectionTitle('إدارة المستخدمين'),
-            const _SectionCard(
-              children: [
-                _LineItem(title: 'إنشاء مستخدم جديد', icon: Icons.person_add_alt_1_outlined),
-                _LineItem(title: 'إدارة المستخدمين', icon: Icons.group_outlined),
-                _LineItem(title: 'إنشاء عميل', icon: Icons.person_outline),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            const _SectionTitle('إدارة القضايا'),
-            const _SectionCard(
-              children: [
-                _LineItem(title: 'إنشاء قضية قانونية', icon: Icons.gavel_outlined),
-                _LineItem(title: 'إدارة القضايا القانونية', icon: Icons.receipt_long_outlined),
-                _LineItem(title: 'إدارة أنواع المهام', icon: Icons.folder_open_outlined),
-                _LineItem(title: 'إسناد المهام', icon: Icons.event_note_outlined),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            const _SectionTitle('الوكالة القانونية'),
-            const _SectionCard(
-              children: [
-                _LineItem(title: 'إنشاء وكالة قانونية', icon: Icons.edit_note_outlined),
-                _LineItem(title: 'إدارة الوكالة القانونية', icon: Icons.fact_check_outlined),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            const _SectionTitle('الوثائق والمستندات'),
-            const _SectionCard(
-              children: [
-                _LineItem(title: 'ملفات القضايا', icon: Icons.description_outlined),
-                _LineItem(title: 'ملفات المهام', icon: Icons.article_outlined),
-                _LineItem(title: 'ملفات الوكالة القانونية', icon: Icons.feed_outlined),
-                _LineItem(title: 'ملفات أخرى', icon: Icons.edit_outlined),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            // Calendar single tile
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-              leading: const Icon(Icons.calendar_month_outlined, color: grey),
-              title: const Text(
-                'التقويم',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+              const SizedBox(height: 18),
+              const _SectionTitle('إدارة المستخدمين'),
+              const _SectionCard(
+                children: [
+                  _LineItem(title: 'إنشاء مستخدم جديد', icon: Icons.person_add_alt_1_outlined),
+                  _LineItem(title: 'إدارة المستخدمين', icon: Icons.group_outlined),
+                  _LineItem(title: 'إنشاء عميل', icon: Icons.person_outline),
+                ],
               ),
-              onTap: () {},
-            ),
 
-            const SizedBox(height: 16),
-            // Logout big button
-            Container(
-              decoration: BoxDecoration(
-                color: cardBg,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: cardBorder),
+              const SizedBox(height: 16),
+              const _SectionTitle('إدارة القضايا'),
+              const _SectionCard(
+                children: [
+                  _LineItem(title: 'إنشاء قضية قانونية', icon: Icons.gavel_outlined),
+                  _LineItem(title: 'إدارة القضايا القانونية', icon: Icons.receipt_long_outlined),
+                  _LineItem(title: 'إدارة أنواع المهام', icon: Icons.folder_open_outlined),
+                  _LineItem(title: 'إسناد المهام', icon: Icons.event_note_outlined),
+                ],
               ),
-              padding: const EdgeInsets.all(10),
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                icon: const Icon(Icons.logout, color: Colors.black87),
-                label: const Text(
-                  'تسجيل الخروج',
+
+              const SizedBox(height: 16),
+              const _SectionTitle('الوكالة القانونية'),
+              const _SectionCard(
+                children: [
+                  _LineItem(title: 'إنشاء وكالة قانونية', icon: Icons.edit_note_outlined),
+                  _LineItem(title: 'إدارة الوكالة القانونية', icon: Icons.fact_check_outlined),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+              const _SectionTitle('الوثائق والمستندات'),
+              const _SectionCard(
+                children: [
+                  _LineItem(title: 'ملفات القضايا', icon: Icons.description_outlined),
+                  _LineItem(title: 'ملفات المهام', icon: Icons.article_outlined),
+                  _LineItem(title: 'ملفات الوكالة القانونية', icon: Icons.feed_outlined),
+                  _LineItem(title: 'ملفات أخرى', icon: Icons.edit_outlined),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+              // Calendar single tile
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                leading: const Icon(Icons.calendar_month_outlined, color: grey),
+                title: const Text(
+                  'التقويم',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
                 ),
-                onPressed: () {
-                  // TODO: handle logout
-                },
+                onTap: () {},
               ),
-            ),
-          ],
+
+              const SizedBox(height: 16),
+              // Logout big button
+              Container(
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: cardBorder),
+                ),
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black87,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: const Icon(Icons.logout, color: Colors.black87),
+                  label: const Text(
+                    'تسجيل الخروج',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                  ),
+                  onPressed: () {
+                    // TODO: handle logout
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

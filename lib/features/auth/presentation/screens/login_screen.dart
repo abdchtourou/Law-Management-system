@@ -34,11 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
+    print('sdlkfjals;kj');
     if (_formKey.currentState!.validate()) {
-      context.read<AuthCubit>().signIn(
-            email: _emailController.text.trim(),
-            password: _passwordController.text,
-          );
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
     }
   }
 

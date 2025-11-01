@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
                 labelStyle: const TextStyle(color: Color(0xFF6B7280)),
               ),
             ),
-            home: const HomeScreen(),
+            home: const LoginScreen(),
           ),
         );
       },

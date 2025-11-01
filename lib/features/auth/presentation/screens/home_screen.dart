@@ -17,12 +17,12 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true, // allows FAB to sit nicely over the bar blur/shadow
-      appBar: AppBar(title: const Text('Home')),
-      drawer: const AppSideDrawer(),
+      appBar: CustomAppBar(),
+      endDrawer: const AppSideDrawer(),
 
       // ----- BODY (you can switch by _index if you want tabbed content) -----
       body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -99,8 +99,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-
-
     );
   }
 }
