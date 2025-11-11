@@ -4,7 +4,7 @@ import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/primary_button.dart';
-import 'home_screen.dart';
+import '../../../home/presentation/screen/home_screen.dart';
 
 /// Sign up screen for new user registration
 class SignUpScreen extends StatefulWidget {

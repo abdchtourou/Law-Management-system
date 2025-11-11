@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lms/features/auth/presentation/screens/home_screen.dart';
+import 'package:lms/core/routing/routes.dart';
+import 'package:lms/core/utils/extensions.dart';
+import 'package:lms/features/home/presentation/screen/home_screen.dart';
 
 class AppSideDrawer extends StatelessWidget {
   const AppSideDrawer({super.key});
@@ -81,11 +83,15 @@ class AppSideDrawer extends StatelessWidget {
 
               const SizedBox(height: 18),
               const _SectionTitle('إدارة المستخدمين'),
-              const _SectionCard(
+              _SectionCard(
                 children: [
-                  _LineItem(title: 'إنشاء مستخدم جديد', icon: Icons.person_add_alt_1_outlined),
-                  _LineItem(title: 'إدارة المستخدمين', icon: Icons.group_outlined),
-                  _LineItem(title: 'إنشاء عميل', icon: Icons.person_outline),
+                  _LineItem(title: 'إنشاء مستخدم جديد', icon: Icons.person_add_alt_1_outlined, onTap: () {
+                    context.pushNamed(Routes.createUser);
+                      }),
+                   _LineItem(title: 'إدارة المستخدمين', icon: Icons.group_outlined,onTap: (){
+                     context.pushNamed(Routes.userManagement);
+                   },),
+                  const _LineItem(title: 'إنشاء عميل', icon: Icons.person_outline),
                 ],
               ),
 

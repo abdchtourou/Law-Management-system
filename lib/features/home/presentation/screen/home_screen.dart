@@ -1,14 +1,15 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../home/presentation/widgets/app_side_drawer.dart';
-import '../../../home/presentation/widgets/cases_summary_card.dart';
-import '../../../home/presentation/widgets/clients_progress_card.dart';
-import '../../../home/presentation/widgets/custom_app_bar.dart';
-import '../../../home/presentation/widgets/dashboard_card.dart';
-import '../../../home/presentation/widgets/task_summary_card.dart';
-import '../../../home/presentation/widgets/users_count_card.dart';
-import '../../../home/presentation/widgets/users_table_page.dart';
+import '../widgets/app_side_drawer.dart';
+import '../widgets/cases_summary_card.dart';
+import '../widgets/clients_progress_card.dart';
+import '../widgets/custom_app_bar.dart';
+import '../widgets/dashboard_card.dart';
+import '../widgets/task_summary_card.dart';
+import '../widgets/users_count_card.dart';
+import '../widgets/users_table_page.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -16,11 +17,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true, // allows FAB to sit nicely over the bar blur/shadow
-      appBar: CustomAppBar(),
+      extendBody: true,
+      appBar: const CustomAppBar(),
       endDrawer: const AppSideDrawer(),
-
-      // ----- BODY (you can switch by _index if you want tabbed content) -----
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
         child: SingleChildScrollView(
@@ -98,6 +97,56 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: ConvexAppBar(
+        backgroundColor: Colors.white,
+        color: const Color(0xFF6A7884),
+        activeColor: Colors.black,
+        curveSize: 85.h,
+        // size of the middle bump
+        height: 55.h,
+        style: TabStyle.fixedCircle,
+        items: const [
+          TabItem(icon: Icons.home_rounded, title: 'الرئيسية'),
+          TabItem(icon: Icons.search_rounded, title: 'المهام'),
+          TabItem(icon: Icons.add, title: ''), // middle "+" button
+          TabItem(icon: Icons.shopping_basket_outlined, title: 'القضايا'),
+          TabItem(icon: Icons.person_outline, title: 'الموكلين'),
+        ],
+        initialActiveIndex: 0,
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 26),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 12.5,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

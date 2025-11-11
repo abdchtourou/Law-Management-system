@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/core/routing/routes.dart';
+import 'package:lms/core/utils/extensions.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/email_field.dart';
@@ -10,7 +12,7 @@ import '../widgets/password_field.dart';
 import '../widgets/remember_forgot_row.dart';
 import '../widgets/submit_button.dart';
 import '../widgets/title_block.dart';
-import 'home_screen.dart';
+import '../../../home/presentation/screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,12 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-    print('sdlkfjals;kj');
-    if (_formKey.currentState!.validate()) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    }
+
+    // if (_formKey.currentState!.validate()) {
+      context.pushReplacementNamed(Routes.homeScreen);
+
+    // }
   }
 
   @override
