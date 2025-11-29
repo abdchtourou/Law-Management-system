@@ -3,14 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lms/core/routing/app_router.dart';
-
 import 'core/dependency_injection.dart';
 import 'core/utils/LocaleCubit.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/auth_state.dart';
 import 'features/home/presentation/screen/home_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
-import 'features/user/presentation/screen/user_management_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,7 +76,7 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
                 onGenerateRoute: appRouter.generateRoute,
-                // home: UserManagementScreen(),
+                // home: CreateClientScreen(),
                 // If you prefer a fallback when device locale is neither en/ar:
                 // localeResolutionCallback: (deviceLocale, supported) =>
                 //   supported.firstWhere((l) => l.languageCode == (deviceLocale?.languageCode ?? 'ar'), orElse: () => const Locale('ar')),

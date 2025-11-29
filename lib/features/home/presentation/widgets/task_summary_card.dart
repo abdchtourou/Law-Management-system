@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/core/theming/styles.dart';
 
 class TaskSummaryCard extends StatelessWidget {
   const TaskSummaryCard({
@@ -51,19 +52,14 @@ class TaskSummaryCard extends StatelessWidget {
                       size: 40,
                       color: Colors.black87,
                     ),
-                const SizedBox(width: 1),
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       10.verticalSpace,
                       Text(
                         '$title : $total',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.black,
-                        ),
+                        style: TextStyles.font12BlackExtraBold,
                         textAlign: TextAlign.end,
                       ),
                        SizedBox(height: 12.h),
@@ -109,34 +105,30 @@ class _SemiGauge extends StatelessWidget {
     const double gaugeHeight = 30;
 
 
-    return Container(
-
-   // حجم الويدجت = حجم الرسمة بالضبط
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          CustomPaint(
-            size: const Size(gaugeWidth, gaugeHeight),
-            painter: _SemiGaugePainter(
-              progress: progress,
-              color: color,
-              strokeWidth: stroke,
-              bgColor: const Color(0xFFEFF3F6),
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        CustomPaint(
+          size: const Size(gaugeWidth, gaugeHeight),
+          painter: _SemiGaugePainter(
+            progress: progress,
+            color: color,
+            strokeWidth: stroke,
+            bgColor: const Color(0xFFEFF3F6),
+          ),
+        ),
+        Positioned(
+          bottom: 0.h,
+          child: Text(
+            '${(progress * 100).toStringAsFixed(1)}%',
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w400,
+              color: Color(0xff1E293B),
             ),
           ),
-          Positioned(
-            bottom: 0.h,
-            child: Text(
-              '${(progress * 100).toStringAsFixed(1)}%',
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff1E293B),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

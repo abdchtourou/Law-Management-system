@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({
+  const SubmitButton({super.key,
     required this.isLoading,
     required this.onPressed,
   });

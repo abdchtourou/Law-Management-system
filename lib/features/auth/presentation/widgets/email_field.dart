@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lms/features/auth/presentation/widgets/password_field.dart';
 
 class EmailField extends StatelessWidget {
-  const EmailField({
+  const EmailField({super.key,
     required this.controller,
     this.enabled = true,
   });

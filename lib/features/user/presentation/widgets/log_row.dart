@@ -4,7 +4,7 @@ class LogRow extends StatelessWidget {
   final String time;
   final String date;
 
-  const LogRow({required this.time, required this.date});
+  const LogRow({super.key, required this.time, required this.date});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ class SectionTitle extends StatelessWidget {
   final String text;
   final IconData icon;
 
-  const SectionTitle(this.text, {required this.icon});
+  const SectionTitle(this.text, {super.key, required this.icon});
 
   @override
   Widget build(BuildContext context) {

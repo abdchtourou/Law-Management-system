@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lms/core/constants/image_constants.dart';
 
 class CasesSummaryCard extends StatelessWidget {
   const CasesSummaryCard({
@@ -37,7 +39,7 @@ class CasesSummaryCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.assignment_turned_in_outlined, size: 40, color: Colors.black87),
+              SvgPicture.asset(lawIconSvg),
               const SizedBox(width: 1),
               Expanded(
                 child: Text(

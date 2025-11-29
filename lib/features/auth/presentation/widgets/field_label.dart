@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FieldLabel extends StatelessWidget {
-  const FieldLabel({required this.text, this.bottom = 8});
+  const FieldLabel({super.key, required this.text, this.bottom = 8});
 
   final String text;
   final double bottom;

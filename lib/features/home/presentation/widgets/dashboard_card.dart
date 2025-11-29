@@ -49,21 +49,10 @@ class DashboardCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 0.0),
-                    child: Opacity(
-                      opacity: 0.9,
-                      child: SizedBox(
-                        width: 56,
-                        height: 56,
-                        child: FittedBox(child: leading),
-                      ),
-                    ),
-                  ),
                   // Title + lines
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           title,
@@ -91,6 +80,18 @@ class DashboardCard extends StatelessWidget {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0.0),
+                    child: Opacity(
+                      opacity: 0.9,
+                      child: SizedBox(
+                        width: 56,
+                        height: 56,
+                        child: FittedBox(child: leading),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
               if (showChevron) ...[

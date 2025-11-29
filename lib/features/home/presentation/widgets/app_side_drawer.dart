@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lms/core/routing/routes.dart';
+import 'package:lms/core/theming/styles.dart';
 import 'package:lms/core/utils/extensions.dart';
-import 'package:lms/features/home/presentation/screen/home_screen.dart';
+
+import '../../../../core/constants/image_constants.dart';
 
 class AppSideDrawer extends StatelessWidget {
   const AppSideDrawer({super.key});
@@ -27,7 +30,7 @@ class AppSideDrawer extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 22,
-                    backgroundImage: AssetImage('assets/avatars/a1.jpg'),
+                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=8'),
                   ),
                   SizedBox(width: 12),
                   Expanded(
@@ -85,24 +88,47 @@ class AppSideDrawer extends StatelessWidget {
               const _SectionTitle('إدارة المستخدمين'),
               _SectionCard(
                 children: [
-                  _LineItem(title: 'إنشاء مستخدم جديد', icon: Icons.person_add_alt_1_outlined, onTap: () {
-                    context.pushNamed(Routes.createUser);
+                  _LineItem(
+                      title: 'إنشاء مستخدم جديد',
+                      icon: personAddSvg,
+                      onTap: () {
+                        context.pushNamed(Routes.createUser);
                       }),
-                   _LineItem(title: 'إدارة المستخدمين', icon: Icons.group_outlined,onTap: (){
-                     context.pushNamed(Routes.userManagement);
-                   },),
-                  const _LineItem(title: 'إنشاء عميل', icon: Icons.person_outline),
+                  _LineItem(
+                    title: 'إدارة المستخدمين',
+                    icon: groupSvg,
+                    onTap: () {
+                      context.pushNamed(Routes.userManagement);
+                    },
+                  ),
+                   _LineItem(title: 'إنشاء عميل', icon: personAddSvg,onTap: () {
+                     context.pushNamed(Routes.createClient);
+
+                   }),
                 ],
               ),
 
               const SizedBox(height: 16),
               const _SectionTitle('إدارة القضايا'),
-              const _SectionCard(
+              _SectionCard(
                 children: [
-                  _LineItem(title: 'إنشاء قضية قانونية', icon: Icons.gavel_outlined),
-                  _LineItem(title: 'إدارة القضايا القانونية', icon: Icons.receipt_long_outlined),
-                  _LineItem(title: 'إدارة أنواع المهام', icon: Icons.folder_open_outlined),
-                  _LineItem(title: 'إسناد المهام', icon: Icons.event_note_outlined),
+                  _LineItem(
+                    title: 'إنشاء قضية قانونية',
+                    icon: gavelSvg,
+                    onTap: () {
+                      context.pushNamed(Routes.createLegalCase);
+                    },
+                  ),
+                  _LineItem(
+                    title: 'إدارة القضايا القانونية',
+                    icon: factCheckSvg,
+                    onTap: () {
+                      context.pushNamed(Routes.legalCaseManagement);
+                    },
+                  ),
+                  const _LineItem(title: 'إنشاء أنواع المهام', icon: folderOpenSvg),
+                  const _LineItem(title: 'إسناد المهام', icon: eventNoteSvg),
+                  const _LineItem(title: ' الموافقة على المهام', icon: trueMarkSvg),
                 ],
               ),
 
@@ -110,8 +136,8 @@ class AppSideDrawer extends StatelessWidget {
               const _SectionTitle('الوكالة القانونية'),
               const _SectionCard(
                 children: [
-                  _LineItem(title: 'إنشاء وكالة قانونية', icon: Icons.edit_note_outlined),
-                  _LineItem(title: 'إدارة الوكالة القانونية', icon: Icons.fact_check_outlined),
+                  _LineItem(title: 'إنشاء وكالة قانونية', icon: icon1Svg),
+                  _LineItem(title: 'إدارة الوكالة القانونية', icon: factCheckSvg),
                 ],
               ),
 
@@ -119,10 +145,10 @@ class AppSideDrawer extends StatelessWidget {
               const _SectionTitle('الوثائق والمستندات'),
               const _SectionCard(
                 children: [
-                  _LineItem(title: 'ملفات القضايا', icon: Icons.description_outlined),
-                  _LineItem(title: 'ملفات المهام', icon: Icons.article_outlined),
-                  _LineItem(title: 'ملفات الوكالة القانونية', icon: Icons.feed_outlined),
-                  _LineItem(title: 'ملفات أخرى', icon: Icons.edit_outlined),
+                  _LineItem(title: 'ملفات القضايا', icon: factCheckSvg),
+                  _LineItem(title: 'ملفات المهام', icon: factCheckSvg),
+                  _LineItem(title: 'ملفات الوكالة القانونية', icon: factCheckSvg),
+                  _LineItem(title: 'ملفات أخرى', icon: icon2Svg),
                 ],
               ),
 
@@ -186,13 +212,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 6, bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
+      child: Text(text, style: TextStyles.font16BlackExtraBold),
     );
   }
 }
@@ -209,11 +229,11 @@ class _SectionCard extends StatelessWidget {
         color: Colors.white,
         border: Border.all(color: const Color(0xFFE6E8EA)),
         borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, 6),
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 4,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -233,26 +253,19 @@ class _LineItem extends StatelessWidget {
   const _LineItem({required this.title, required this.icon, this.onTap});
 
   final String title;
-  final IconData icon;
+  final String icon;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    const grey = Color(0xFF6B7280);
     return ListTile(
       onTap: onTap,
       dense: true,
       minVerticalPadding: 12,
+      horizontalTitleGap: 3.w,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-      trailing: Icon(icon, color: grey),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 10.5.sp,
-          fontWeight: FontWeight.w700,
-          color: Color(0xFF374151),
-        ),
-      ),
+      leading: SvgPicture.asset(icon),
+      title: Text(title, style: TextStyles.font10BlackBold),
     );
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:lms/features/user/presentation/widgets/userManagementWidgets/user_card.dart';
 
+import '../../../../../core/constants/image_constants.dart';
+import '../../../../../core/theming/colorsManager.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../screen/user_management_screen.dart';
 
@@ -120,7 +123,7 @@ class _UserCardsTableState extends State<UserCardsTable> {
                       icon: const Icon(Icons.add, color: Colors.white),
                       label: Text(
                         'إضافة مستخدم',
-                        style: TextStyles.font14BlackBold,
+                        style: TextStyles.font14WhiteBold,
                       ),
                     ),
                   ),
@@ -241,18 +244,21 @@ class _RoundIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFFF3F5F7),
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: 44.w,
-          height: 44.h,
-          child: Icon(icon, color: const Color(0xFF6B7280)),
-        ),
-      ),
+    return InkWell(
+
+      onTap: onTap,
+      child: Container(
+          padding: EdgeInsets.all(5.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24.r),
+            border: Border.all(
+              color:  ColorsManager.grey30,
+            ),
+          ),
+
+
+          child: SvgPicture.asset(filterSvg)),
     );
   }
 }

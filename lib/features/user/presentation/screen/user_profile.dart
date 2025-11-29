@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/widgets/custom_app_bar.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/id_image_placeholder.dart';
 import '../widgets/info_row.dart';
@@ -14,26 +15,14 @@ class UserProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const bg = Color(0xFFF5F6F7);
-    const titleColor = Color(0xFF2D2F32);
-    const border = Color(0xFFE3E6EA);
 
     return Scaffold(
       backgroundColor: bg,
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF0F2F4),
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black87),
-        ),
-        centerTitle: true,
-        title: const Text('تفاصيل المستخدم',
-            style: TextStyle(color: titleColor, fontWeight: FontWeight.w600, fontSize: 18)),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: border),
-        ),
-      ),
+      appBar: const CustomAppBar(
+        title: 'تفاصيل المستخدم',
+
+      )
+      ,
       body: SafeArea(
         child: Directionality(
           textDirection: TextDirection.rtl,

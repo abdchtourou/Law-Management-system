@@ -6,7 +6,7 @@ import '../../../../../core/theming/styles.dart';
 import '../../screen/user_management_screen.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard({required this.user});
+  const UserCard({super.key, required this.user});
 
   final UserCardData user;
 
@@ -49,7 +49,7 @@ class UserCard extends StatelessWidget {
       case UserRole.employee:
         return Icons.badge;
       case UserRole.agent:
-        return Icons.vpn_key;
+        return Icons.people;
       case UserRole.client:
         return Icons.people;
     }
@@ -66,7 +66,7 @@ class UserCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.25),
             blurRadius: 12,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),

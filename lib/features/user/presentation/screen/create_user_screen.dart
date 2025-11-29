@@ -2,6 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/widgets/labeled_text_field.dart';
+import '../../../../core/widgets/labled_dropdown.dart';
+import '../../../../core/widgets/labled_image_slot.dart';
+
+
 class CreateUserScreen extends StatefulWidget {
   const CreateUserScreen({super.key});
 
@@ -51,93 +57,88 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const bg = Color(0xFFF5F6F7);
-    const fieldBorder = Color(0xFFE1E5E8);
-    const titleColor = Color(0xFF343A40);
-    const hintColor = Color(0xFF98A2AB);
-
-    InputDecoration deco(String hint) => InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(color: hintColor, fontSize: 14),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(6),
-            borderSide: const BorderSide(color: fieldBorder, width: 1),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(6),
-            borderSide: const BorderSide(color: fieldBorder, width: 1.2),
-          ),
-          filled: true,
-          fillColor: Colors.white,
-        );
-
     Widget gap([double h = 12]) => SizedBox(height: h);
 
     return Scaffold(
-      backgroundColor: bg,
-      appBar: AppBar(
-        backgroundColor: bg,
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'إنشاء مستخدم جديد',
-          style: TextStyle(
-            color: titleColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'إنشاء مستخدم جديد',),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              _Labeled('اسم الموظف', child: TextField(decoration: deco('محمد سعيد'))),
+              const LabeledTextField(
+                label: 'اسم الموظف',
+                hint: 'محمد سعيد',
+              ),
               gap(),
-              _Labeled('اسم الأب', child: TextField(decoration: deco('محمد سعيد'))),
+              const LabeledTextField(
+                label: 'اسم الأب',
+                hint: 'محمد سعيد',
+              ),
               gap(),
-              _Labeled('اسم الأم', child: TextField(decoration: deco('محمد سعيد'))),
+              const LabeledTextField(
+                label: 'اسم الأم',
+                hint: 'محمد سعيد',
+              ),
               gap(),
-              _Labeled('التولد', child: TextField(decoration: deco('يوم/شهر/سنة'))),
+              const LabeledTextField(
+                label: 'التولد',
+                hint: 'يوم/شهر/سنة',
+              ),
               gap(),
-              _Labeled('العنوان', child: TextField(decoration: deco('دمشق'))),
+              const LabeledTextField(
+                label: 'العنوان',
+                hint: 'دمشق',
+              ),
               gap(),
-              _Labeled('الرقم الوطني', child: TextField(decoration: deco('956513513515'))),
+              const LabeledTextField(
+                label: 'الرقم الوطني',
+                hint: '956513513515',
+                keyboardType: TextInputType.number,
+              ),
               gap(),
-              _Labeled('الدولة', child: TextField(decoration: deco('سوريا'))),
+              const LabeledTextField(
+                label: 'الدولة',
+                hint: 'سوريا',
+              ),
               gap(),
-              _Labeled('المحافظة', child: TextField(decoration: deco('دمشق'))),
+              const LabeledTextField(
+                label: 'المحافظة',
+                hint: 'دمشق',
+              ),
               gap(),
-              _Labeled('رقم تواصل 1', child: TextField(decoration: deco('956513513515'))),
+              const LabeledTextField(
+                label: 'رقم تواصل 1',
+                hint: '956513513515',
+                keyboardType: TextInputType.phone,
+              ),
               gap(),
-              _Labeled('رقم تواصل 2', child: TextField(decoration: deco('956513513515'))),
+              const LabeledTextField(
+                label: 'رقم تواصل 2',
+                hint: '956513513515',
+                keyboardType: TextInputType.phone,
+              ),
               gap(),
-              _Labeled('البريد الالكتروني', child: TextField(decoration: deco('example@email.com'))),
+              const LabeledTextField(
+                label: 'البريد الالكتروني',
+                hint: 'example@email.com',
+                keyboardType: TextInputType.emailAddress,
+              ),
               gap(),
-              _Labeled(
-                'الدور',
-                child: _FakeDropdownField(
-                  label: 'نص تجريبي',
-                  decoration: deco('نص تجريبي').copyWith(
-                    suffixIcon: const Icon(Icons.keyboard_arrow_down_rounded, color: hintColor),
-                  ),
-                ),
+              const LabeledFakeDropdown(
+                label: 'الدور',
+                value: 'نص تجريبي',
               ),
               gap(16),
-              const _LabelOnly('صورة شخصية'),
-              gap(6),
-              _ImageSlot(
+              LabeledImageSlot(
+                label: 'صورة شخصية',
                 file: _profileImage,
                 onTap: () => _pickImage(isProfile: true),
               ),
               gap(16),
-              const _LabelOnly('صورة الهوية'),
-              gap(6),
-              _ImageSlot(
+              LabeledImageSlot(
+                label: 'صورة الهوية',
                 file: _idImage,
                 onTap: () => _pickImage(isProfile: false),
               ),
@@ -147,7 +148,9 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                   width: 180,
                   height: 44,
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO: send form
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
@@ -156,7 +159,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                       ),
                       elevation: 0,
                     ),
-                    icon: const Icon(Icons.autorenew_rounded, size: 18),
+                    icon: const Icon(Icons.person_add_alt_1, size: 18),
                     label: const Text(
                       'إنشاء مستخدم',
                       style: TextStyle(
@@ -170,86 +173,6 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _Labeled extends StatelessWidget {
-  final String label;
-  final Widget child;
-
-  const _Labeled(this.label, {required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label,
-            style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w600)),
-        const SizedBox(height: 6),
-        child,
-      ],
-    );
-  }
-}
-
-class _LabelOnly extends StatelessWidget {
-  final String label;
-
-  const _LabelOnly(this.label);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(label,
-        style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w600));
-  }
-}
-
-/// Dropdown شكلي فقط
-class _FakeDropdownField extends StatelessWidget {
-  final String label;
-  final InputDecoration decoration;
-
-  const _FakeDropdownField({required this.label, required this.decoration});
-
-  @override
-  Widget build(BuildContext context) {
-    return InputDecorator(
-      decoration: decoration,
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Text(label, style: const TextStyle(color: Color(0xFF111827), fontSize: 14)),
-      ),
-    );
-  }
-}
-
-/// صندوق الصورة – يفتح الكاميرا/المعرض ويعرض المعاينة
-class _ImageSlot extends StatelessWidget {
-  final File? file;
-  final VoidCallback onTap;
-
-  const _ImageSlot({required this.file, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 92,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE1E5E8)),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        clipBehavior: Clip.hardEdge,
-        child: file == null
-            ? const Center(
-                child: Icon(Icons.image_outlined, size: 30, color: Color(0xFF9AA6B2)),
-              )
-            : Image.file(file!, fit: BoxFit.cover, width: double.infinity),
       ),
     );
   }

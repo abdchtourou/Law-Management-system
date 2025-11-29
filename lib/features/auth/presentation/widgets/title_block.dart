@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TitleBlock extends StatelessWidget {
-  const TitleBlock();
+  const TitleBlock({super.key});
 
   @override
   Widget build(BuildContext context) {

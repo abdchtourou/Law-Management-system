@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lms/core/theming/font_weight_helper.dart';
 import 'package:lms/core/utils/extensions.dart';
 
 import '../../../../core/routing/routes.dart';
@@ -24,7 +23,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: ColorsManager.accent),
+            icon: const Icon(Icons.arrow_back, color: ColorsManager.accent),
             onPressed: () => Navigator.pop(context),
           ),
           actions: [

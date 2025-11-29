@@ -13,8 +13,9 @@ class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
   final cartNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
-  int _selectedTap = 0;
+  final int _selectedTap = 0;
   List<NavModel> navItems = [];
+  @override
   initState() {
     super.initState();
     navItems = [
@@ -24,18 +25,14 @@ class _MainScreenState extends State<MainScreen> {
       ),
       NavModel(
         navKey: cartNavKey,
-        page: Container(
-          child: const Center(
-            child: Text('Cart'),
-          ),
+        page: const Center(
+          child: Text('Cart'),
         ),
       ),
       NavModel(
         navKey: profileNavKey,
-        page: Container(
-          child: const Center(
-            child: Text('Profile'),
-          ),
+        page: const Center(
+          child: Text('Profile'),
         ),
       ),
     ];

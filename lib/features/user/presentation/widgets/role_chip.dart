@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class RoleChip extends StatelessWidget {
   final String label;
 
-  const RoleChip({required this.label});
+  const RoleChip({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {

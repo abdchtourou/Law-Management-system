@@ -1,6 +1,9 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lms/core/constants/image_constants.dart';
+import 'package:lms/core/theming/colorsManager.dart';
 
 import '../widgets/app_side_drawer.dart';
 import '../widgets/cases_summary_card.dart';
@@ -31,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                     child: TaskSummaryCard(
                       total: 305,
                       progress: 0.7,
-                      icon: Icon(Icons.description_outlined, size: 48.r, color: Colors.black87),
+                      icon: SvgPicture.asset(noteSvg,width: 50.w,),
                     ),
                   ),
                   20.horizontalSpace,
@@ -52,13 +55,14 @@ class HomeScreen extends StatelessWidget {
                     child: UsersCountCard(
                       total: 11,
                       avatars: [
-                        AssetImage('assets/avatars/a1.jpg'),
-                        AssetImage('assets/avatars/a2.jpg'),
-                        AssetImage('assets/avatars/a3.jpg'),
-                        AssetImage('assets/avatars/a4.jpg'),
-                        AssetImage('assets/avatars/a5.jpg'),
-                        AssetImage('assets/avatars/a6.jpg'),
-                        AssetImage('assets/avatars/a7.jpg'),
+                        NetworkImage('https://i.pravatar.cc/150?img=1'),
+                        NetworkImage('https://i.pravatar.cc/150?img=2'),
+                        NetworkImage('https://i.pravatar.cc/150?img=3'),
+                        NetworkImage('https://i.pravatar.cc/150?img=4'),
+                        NetworkImage('https://i.pravatar.cc/150?img=4'),
+                        NetworkImage('https://i.pravatar.cc/150?img=6'),
+                        NetworkImage('https://i.pravatar.cc/150?img=7'),
+                        NetworkImage('https://i.pravatar.cc/150?img=8'),
                       ],
                     ),
                   ),
@@ -83,7 +87,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 28),
               DashboardCard(
                 title: 'المهام',
-                leading: const Icon(Icons.front_hand_outlined, color: Colors.white, size: 64),
+                leading: SvgPicture.asset(color: ColorsManager.accent,lawIconSvg,),
                 items: const [
                   'مهمة 11 : المكلّف: احمد اسماعيل - الحالة: قيد الإنجاز',
                   'مهمة 12 : المكلّف: احمد اسماعيل - الحالة: مكتملة',
@@ -119,35 +123,3 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 26),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 12.5,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:lms/core/constants/image_constants.dart';
+import 'package:lms/core/theming/colorsManager.dart';
 
-const _blue = Color(0xFF2C617B);      // الأزرق الداكن بالشكل
-const _barBg = Color(0xFFD3DBE0);     // خلفية شريط التقدم
-const _labelGrey = Color(0xFF6B8796); // رمادي مائل للأزرق
+// الأزرق الداكن بالشكل
+// خلفية شريط التقدم
+// رمادي مائل للأزرق
 
 //==============================//
 // بطاقة عدد المستخدمين + أفاتارات
@@ -53,9 +56,10 @@ class UsersCountCard extends StatelessWidget {
                   ),
                 ),
                 12.w.horizontalSpace,
-
-                Icon(Icons.group_outlined, size: 32.r, color: _blue),
-
+                SvgPicture.asset(
+                  groupSvg,
+                  color: ColorsManager.blue600,
+                )
               ],
             ),
             18.h.verticalSpace,
@@ -109,4 +113,3 @@ class _OverlappedAvatars extends StatelessWidget {
     );
   }
 }
-

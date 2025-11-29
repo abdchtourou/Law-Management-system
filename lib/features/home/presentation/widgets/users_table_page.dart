@@ -47,7 +47,7 @@ class _UsersTablePageState extends State<UsersTablePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    Theme.of(context);
     final filtered = all.where((u) {
       final q = _search.text.trim();
       if (q.isEmpty) return true;
@@ -265,7 +265,7 @@ class _UserRowTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
-      color: Color(0xFF475569),
+      color: const Color(0xFF475569),
       fontWeight: FontWeight.bold,
       fontSize: 14.sp,
       height: 1.4,

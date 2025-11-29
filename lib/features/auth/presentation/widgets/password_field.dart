@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PasswordField extends StatefulWidget {
-  const PasswordField({
+  const PasswordField({super.key,
     required this.controller,
     this.enabled = true,
   });
