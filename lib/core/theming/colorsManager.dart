@@ -1,8 +1,7 @@
 import 'dart:ui' show Color;
 
-class ColorsManager{
+class ColorsManager {
   static const Color accent = Color(0xffB0BEC5);
-
   static const Color accent1 = Color(0xff6C737F);
   static const Color grey30 = Color(0xffCBD5E1);
   static const Color grey60 = Color(0xff475569);
@@ -11,6 +10,4 @@ class ColorsManager{
   static const Color grey500 = Color(0xff78909C);
   static const Color grey800 = Color(0xff455A64);
   static const Color blue600 = Color(0xff03506E);
-
-
 }
