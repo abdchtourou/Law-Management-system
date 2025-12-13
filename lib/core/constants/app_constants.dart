@@ -1,16 +1,13 @@
-/// Application-wide constants
-class AppConstants {
-  // API
-  static const String apiBaseUrl = 'https://fakestoreapi.com';
-  static const Duration apiTimeout = Duration(seconds: 30);
+import '../config/env_config.dart';
 
-  // Cache
+class AppConstants {
+  // API Configuration - now loaded from environment
+  static String get apiBaseUrl => EnvConfig.apiBaseUrl;
+  static Duration get apiTimeout => Duration(seconds: EnvConfig.apiTimeout);
+
+  // Cache Configuration
   static const String cacheKey = 'CACHED_DATA';
   static const Duration cacheValidity = Duration(hours: 1);
-
-  // UI
-  static const double defaultPadding = 16.0;
-  static const double defaultBorderRadius = 8.0;
 
   // Error Messages
   static const String serverFailureMessage = 'Server failure occurred';

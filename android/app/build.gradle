@@ -27,6 +27,27 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions = ["environment"]
+    
+    productFlavors {
+        create("prod") {
+            dimension = "environment"
+            applicationId = "com.example.lms"
+            resValue("string", "app_name", "LMS")
+        }
+        
+        create("dev") {
+            dimension = "environment"
+            applicationId = "com.example.lms.dev"
+            resValue("string", "app_name", "LMS Dev")
+        }
+        
+        create("aud") {
+            dimension = "environment"
+            applicationId = "com.example.lms.aud"
+            resValue("string", "app_name", "LMS Audit")
+        }
+    }
 
     buildTypes {
         release {

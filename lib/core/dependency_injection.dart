@@ -17,36 +17,18 @@ import 'network/network_info.dart';
 /// Service locator instance
 final sl = GetIt.instance;
 
-/// Initialize all dependencies
 Future<void> initializeDependencies() async {
-  // ============================================================================
-  // External Dependencies
-  // ============================================================================
-
-  // SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
 
-  // Dio Client
   sl.registerLazySingleton<Dio>(() => Dio());
 
-  // ============================================================================
-  // Core
-  // ============================================================================
-
-  // Network Info
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
-  // API Client
   sl.registerLazySingleton<ApiClient>(
     () => ApiClient(dio: sl<Dio>()),
   );
 
-  // ============================================================================
-  // Auth Feature
-  // ============================================================================
-
-  // Data Sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(apiClient: sl<ApiClient>()),
   );
@@ -55,7 +37,6 @@ Future<void> initializeDependencies() async {
     () => AuthLocalDataSourceImpl(sharedPreferences: sl<SharedPreferences>()),
   );
 
-  // Repository
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       remoteDataSource: sl<AuthRemoteDataSource>(),

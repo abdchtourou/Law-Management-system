@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../../core/errors/exceptions.dart';
 import '../../models/user_model.dart';
 
-/// Local data source interface for authentication
 abstract class AuthLocalDataSource {
   Future<UserModel?> getCachedUser();
   Future<void> cacheUser(UserModel user);
@@ -11,7 +10,6 @@ abstract class AuthLocalDataSource {
   Future<bool> isSignedIn();
 }
 
-/// Implementation of AuthLocalDataSource using SharedPreferences
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final SharedPreferences sharedPreferences;
   static const String cachedUserKey = 'CACHED_USER';

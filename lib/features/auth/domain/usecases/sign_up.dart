@@ -20,7 +20,6 @@ class SignUp implements UseCase<UserEntity, SignUpParams> {
   }
 }
 
-/// Parameters for SignUp use case
 class SignUpParams extends Equatable {
   final String email;
   final String password;

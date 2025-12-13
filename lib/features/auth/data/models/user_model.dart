@@ -1,7 +1,5 @@
 import '../../domain/entities/user_entity.dart';
 
-/// User model for data layer
-/// Extends UserEntity and adds serialization capabilities
 class UserModel extends UserEntity {
   const UserModel({
     required super.id,
@@ -11,7 +9,6 @@ class UserModel extends UserEntity {
     required super.createdAt,
   });
 
-  /// Creates a UserModel from JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'] as String,
@@ -22,7 +19,6 @@ class UserModel extends UserEntity {
     );
   }
 
-  /// Converts UserModel to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,

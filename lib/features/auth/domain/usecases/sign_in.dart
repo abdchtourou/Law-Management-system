@@ -5,7 +5,6 @@ import '../../../../core/usecases/usecase.dart';
 import '../entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
-/// Use case for signing in a user
 class SignIn implements UseCase<UserEntity, SignInParams> {
   final AuthRepository repository;
 
@@ -20,7 +19,6 @@ class SignIn implements UseCase<UserEntity, SignInParams> {
   }
 }
 
-/// Parameters for SignIn use case
 class SignInParams extends Equatable {
   final String email;
   final String password;

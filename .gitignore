@@ -31,6 +31,11 @@ migrate_working_dir/
 .pub/
 /build/
 
+
+production.env
+staging.env
+audit.env
+
 # Symbolication related
 app.*.symbols
 

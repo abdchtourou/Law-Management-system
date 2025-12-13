@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../config/env_config.dart';
 import '../errors/exceptions.dart';
 
 /// API client for making HTTP requests using Dio
@@ -8,29 +9,29 @@ class ApiClient {
 
   ApiClient({
     required this.dio,
-    this.baseUrl = 'https://fakestoreapi.com',
-  }) {
-    // Configure Dio
+    String? baseUrl,
+  }) : baseUrl = baseUrl ?? EnvConfig.apiBaseUrl {
     dio.options = BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
+      baseUrl: this.baseUrl,
+      connectTimeout: Duration(seconds: EnvConfig.apiTimeout),
+      receiveTimeout: Duration(seconds: EnvConfig.apiTimeout),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
     );
 
-    // Add interceptors for logging (optional)
-    dio.interceptors.add(
-      LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-        error: true,
-        requestHeader: true,
-        responseHeader: false,
-      ),
-    );
+    if (EnvConfig.enableLogging) {
+      dio.interceptors.add(
+        LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          error: true,
+          requestHeader: true,
+          responseHeader: false,
+        ),
+      );
+    }
   }
 
   /// GET request

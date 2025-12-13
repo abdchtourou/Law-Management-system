@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lms/core/routing/app_router.dart';
+import 'package:env_banner/env_banner.dart';
+import 'core/config/env_config.dart';
+import 'core/config/environment.dart';
 import 'core/dependency_injection.dart';
 import 'core/utils/LocaleCubit.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
@@ -11,14 +14,30 @@ import 'features/home/presentation/screen/home_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 
 void main() async {
+  await mainCommon(environment: Environment.development);
+}
+
+Future<void> mainCommon({required Environment environment}) async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  await EnvConfig.initialize(environment: environment);
+  
   await initializeDependencies();
-  runApp(MyApp(appRouter: AppRouter()));
+  runApp(MyApp(
+    appRouter: AppRouter(),
+    environment: environment,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.appRouter});
+  const MyApp({
+    super.key,
+    required this.appRouter,
+    required this.environment,
+  });
+  
   final AppRouter appRouter;
+  final Environment environment;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +95,19 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
                 onGenerateRoute: appRouter.generateRoute,
+                
+                // Use builder to wrap with environment banner for non-production builds
+                builder: (context, child) {
+                  if (environment.isProduction) {
+                    return child!;
+                  } else {
+                    return EnvBanner(
+                      color: environment.bannerColor!,
+                      primary: environment.appName,
+                      child: child!,
+                    );
+                  }
+                },
                 // home: CreateClientScreen(),
                 // If you prefer a fallback when device locale is neither en/ar:
                 // localeResolutionCallback: (deviceLocale, supported) =>
