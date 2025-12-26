@@ -1,5 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import '../../features/auth/data/datasources/local/auth_local_data_source.dart';
 import '../config/env_config.dart';
+import 'token_interceptor.dart';
 import '../errors/exceptions.dart';
 
 /// API client for making HTTP requests using Dio
@@ -7,8 +10,11 @@ class ApiClient {
   final Dio dio;
   final String baseUrl;
 
+  final AuthLocalDataSource authLocalDataSource;
+
   ApiClient({
     required this.dio,
+    required this.authLocalDataSource,
     String? baseUrl,
   }) : baseUrl = baseUrl ?? EnvConfig.apiBaseUrl {
     dio.options = BaseOptions(
@@ -18,17 +24,24 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+
       },
+    );
+
+    dio.interceptors.add(
+      TokenInterceptor(authLocalDataSource: authLocalDataSource),
     );
 
     if (EnvConfig.enableLogging) {
       dio.interceptors.add(
-        LogInterceptor(
+        PrettyDioLogger(
+          requestHeader: true,
           requestBody: true,
           responseBody: true,
-          error: true,
-          requestHeader: true,
           responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90,
         ),
       );
     }

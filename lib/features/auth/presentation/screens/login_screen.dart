@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lms/core/routing/routes.dart';
-import 'package:lms/core/utils/extensions.dart';
+
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 import '../widgets/email_field.dart';
@@ -26,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final bool _rememberMe = false;
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -36,10 +35,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleLogin() {
-
     // if (_formKey.currentState!.validate()) {
-      context.pushReplacementNamed(Routes.homeScreen);
+    context.read<AuthCubit>().signIn(
+          email: _emailController.text,
+          password: _passwordController.text,
+          rememberMe: _rememberMe,
+        );
 
+    // context.pushReplacementNamed(Routes.homeScreen);
+    //
     // }
   }
 
@@ -91,13 +95,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 35.h),
                     RememberForgotRow(
                       rememberMe: _rememberMe,
-                      onChanged: (t) {},
+                      onChanged: (t) {
+                        setState(() {
+                          // ignore: unnecessary_cast
+                          _rememberMe = t as bool;
+                        });
+                      },
                       onForgotPressed: isLoading
                           ? null
                           : () {
                               // TODO: navigate to reset password
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('واجهة استعادة كلمة المرور')),
+                                const SnackBar(
+                                    content: Text('واجهة استعادة كلمة المرور')),
                               );
                             },
                     ),

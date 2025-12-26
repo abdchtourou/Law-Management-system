@@ -2,16 +2,16 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/user_entity.dart';
+import '../../data/models/user_model.dart';
 import '../repositories/auth_repository.dart';
 
-class SignUp implements UseCase<UserEntity, SignUpParams> {
+class SignUp implements UseCase<UserModel, SignUpParams> {
   final AuthRepository repository;
 
   SignUp(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(SignUpParams params) async {
+  Future<Either<Failure, UserModel>> call(SignUpParams params) async {
     return await repository.signUp(
       email: params.email,
       password: params.password,

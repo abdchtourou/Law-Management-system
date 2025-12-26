@@ -10,8 +10,8 @@ import 'core/dependency_injection.dart';
 import 'core/utils/LocaleCubit.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/cubit/auth_state.dart';
-import 'features/home/presentation/screen/home_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/home/presentation/screen/main_screen.dart';
 
 void main() async {
   await mainCommon(environment: Environment.development);
@@ -19,9 +19,9 @@ void main() async {
 
 Future<void> mainCommon({required Environment environment}) async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await EnvConfig.initialize(environment: environment);
-  
+
   await initializeDependencies();
   runApp(MyApp(
     appRouter: AppRouter(),
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     required this.appRouter,
     required this.environment,
   });
-  
+
   final AppRouter appRouter;
   final Environment environment;
 
@@ -77,7 +77,8 @@ class MyApp extends StatelessWidget {
                   inputDecorationTheme: InputDecorationTheme(
                     filled: true,
                     fillColor: const Color(0xFFF6F7F9),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 18),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: const BorderSide(color: Color(0xFFE5E7EB)),
@@ -88,14 +89,15 @@ class MyApp extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Colors.black, width: 1.2),
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 1.2),
                     ),
                     hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
                     labelStyle: const TextStyle(color: Color(0xFF6B7280)),
                   ),
                 ),
                 onGenerateRoute: appRouter.generateRoute,
-                
+
                 // Use builder to wrap with environment banner for non-production builds
                 builder: (context, child) {
                   if (environment.isProduction) {
@@ -108,7 +110,7 @@ class MyApp extends StatelessWidget {
                     );
                   }
                 },
-                // home: CreateClientScreen(),
+                home: const AuthWrapper(),
                 // If you prefer a fallback when device locale is neither en/ar:
                 // localeResolutionCallback: (deviceLocale, supported) =>
                 //   supported.firstWhere((l) => l.languageCode == (deviceLocale?.languageCode ?? 'ar'), orElse: () => const Locale('ar')),
@@ -129,9 +131,10 @@ class AuthWrapper extends StatelessWidget {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         if (state is AuthLoading) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         } else if (state is AuthAuthenticated) {
-          return const HomeScreen();
+          return const MainScreen();
         } else {
           return const LoginScreen();
         }

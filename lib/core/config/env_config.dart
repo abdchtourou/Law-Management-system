@@ -2,9 +2,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lms/core/config/environment.dart';
 
 class EnvConfig {
-  static Environment? _currentEnvironment;
   static Future<void> initialize({required Environment environment}) async {
-    _currentEnvironment = environment;
     await dotenv.load(fileName: environment.envFile);
   }
   static String get apiBaseUrl =>

@@ -13,6 +13,11 @@ import '../features/auth/domain/usecases/sign_up.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import 'network/api_client.dart';
 import 'network/network_info.dart';
+import '../features/home/data/datasource/remote/home_remote_data_source.dart';
+import '../features/home/data/datasource/repo/home_repo_impl.dart';
+import '../features/home/domain/repo/home_repo.dart';
+import '../features/home/domain/usecase/get_home_use_case.dart';
+import '../features/home/presentation/cubit/home_cubit.dart';
 
 /// Service locator instance
 final sl = GetIt.instance;
@@ -25,16 +30,19 @@ Future<void> initializeDependencies() async {
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
+  sl.registerLazySingleton<AuthLocalDataSource>(
+    () => AuthLocalDataSourceImpl(sharedPreferences: sl<SharedPreferences>()),
+  );
+
   sl.registerLazySingleton<ApiClient>(
-    () => ApiClient(dio: sl<Dio>()),
+    () => ApiClient(
+      dio: sl<Dio>(),
+      authLocalDataSource: sl<AuthLocalDataSource>(),
+    ),
   );
 
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(apiClient: sl<ApiClient>()),
-  );
-
-  sl.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(sharedPreferences: sl<SharedPreferences>()),
   );
 
   sl.registerLazySingleton<AuthRepository>(
@@ -59,5 +67,19 @@ Future<void> initializeDependencies() async {
       signOutUseCase: sl<SignOut>(),
       getCurrentUserUseCase: sl<GetCurrentUser>(),
     ),
+  );
+
+  // Home
+  sl.registerLazySingleton<HomeRemoteDataSource>(
+    () => HomeRemoteDataSourceImpl(apiClient: sl<ApiClient>()),
+  );
+  sl.registerLazySingleton<HomeRepo>(
+    () => HomeRepoImpl(remoteDataSource: sl<HomeRemoteDataSource>()),
+  );
+  sl.registerLazySingleton<GetHomeUseCase>(
+    () => GetHomeUseCase(homeRepo: sl<HomeRepo>()),
+  );
+  sl.registerFactory<HomeCubit>(
+    () => HomeCubit(sl<GetHomeUseCase>()),
   );
 }

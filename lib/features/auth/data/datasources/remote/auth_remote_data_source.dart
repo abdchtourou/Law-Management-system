@@ -34,21 +34,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       // In a real app, this would call an actual API endpoint
       // For demo purposes, we'll simulate a successful response
-      await apiClient.post('/auth/login', {
-        'email': email,
+     final response = await apiClient.post('/users/api/login/', {
+        'user_auth_id': email,
         'password': password,
+
       });
 
       // Simulated response - in production this would come from the API
-      final userData = {
-        'id': '1',
-        'email': email,
-        'name': 'John Doe',
-        'avatar': 'https://i.pravatar.cc/150?img=1',
-        'createdAt': DateTime.now().toIso8601String(),
-      };
-
-      return UserModel.fromJson(userData);
+      return UserModel.fromJson(response);
     } on ServerException {
       rethrow;
     } catch (e) {

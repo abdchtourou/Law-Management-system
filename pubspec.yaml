@@ -47,6 +47,9 @@ dependencies:
   # Local Storage
   shared_preferences: ^2.2.2
   flutter_screenutil:
+  pretty_dio_logger: ^1.4.0
+  bloc: ^8.1.4
+  meta: ^1.15.0
 
 dev_dependencies:
   flutter_test:
@@ -74,9 +77,6 @@ flutter:
   assets:
     - assets/font/
     - assets/svg/
-    - .env
-    - .env.dev
-    - .env.prod
     - production.env
     - staging.env
     - audit.env

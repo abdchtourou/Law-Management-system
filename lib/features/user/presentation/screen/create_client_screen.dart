@@ -7,7 +7,6 @@ import '../../../../core/widgets/custom_app_bar.dart';
 import '../../../../core/widgets/labeled_text_field.dart';
 import '../../../../core/widgets/labled_dropdown.dart';
 import '../../../../core/widgets/labled_image_slot.dart';
-import '../../../legalCase/presentation/screen/create_legal_case_screen.dart';
 import '../../../legalCase/presentation/widgets/description_field.dart';
 
 

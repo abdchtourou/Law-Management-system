@@ -2,10 +2,10 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
-import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/local/auth_local_data_source.dart';
 import '../datasources/remote/auth_remote_data_source.dart';
+import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -19,9 +19,10 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   @override
-  Future<Either<Failure, UserEntity>> signIn({
+  Future<Either<Failure, UserModel>> signIn({
     required String email,
     required String password,
+    required bool rememberMe,
   }) async {
     if (await networkInfo.isConnected) {
       try {
@@ -29,7 +30,9 @@ class AuthRepositoryImpl implements AuthRepository {
           email: email,
           password: password,
         );
-        await localDataSource.cacheUser(user);
+        if (rememberMe) {
+          await localDataSource.cacheUser(user);
+        }
         return Right(user);
       } on ServerException catch (e) {
         return Left(ServerFailure(e.message));
@@ -44,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> signUp({
+  Future<Either<Failure, UserModel>> signUp({
     required String email,
     required String password,
     required String name,
@@ -88,7 +91,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity?>> getCurrentUser() async {
+  Future<Either<Failure, UserModel?>> getCurrentUser() async {
     try {
       final user = await localDataSource.getCachedUser();
       return Right(user);

@@ -22,11 +22,12 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn({
     required String email,
     required String password,
+    required bool rememberMe,
   }) async {
     emit(AuthLoading());
 
     final result = await signInUseCase(
-      SignInParams(email: email, password: password),
+      SignInParams(email: email, password: password, rememberMe: rememberMe),
     );
 
     result.fold(
