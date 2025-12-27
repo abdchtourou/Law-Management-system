@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../features/auth/data/datasources/local/auth_local_data_source.dart';
@@ -11,13 +12,17 @@ import '../features/auth/domain/usecases/sign_in.dart';
 import '../features/auth/domain/usecases/sign_out.dart';
 import '../features/auth/domain/usecases/sign_up.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
+import '../features/home/data/model/isar/home_isar_model.dart';
+import '../features/home/data/repo/home_repo_impl.dart';
 import 'network/api_client.dart';
 import 'network/network_info.dart';
+import '../features/home/data/datasource/local/home_local_data_source.dart';
 import '../features/home/data/datasource/remote/home_remote_data_source.dart';
-import '../features/home/data/datasource/repo/home_repo_impl.dart';
 import '../features/home/domain/repo/home_repo.dart';
-import '../features/home/domain/usecase/get_home_use_case.dart';
+import '../features/home/domain/usecase/get_home_stream_use_case.dart';
+import '../features/home/domain/usecase/sync_home_use_case.dart';
 import '../features/home/presentation/cubit/home_cubit.dart';
+import 'package:path_provider/path_provider.dart';
 
 /// Service locator instance
 final sl = GetIt.instance;
@@ -25,6 +30,14 @@ final sl = GetIt.instance;
 Future<void> initializeDependencies() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
+  // Initialize Isar (using empty string for directory uses the default location)
+  final isar = await Isar.open(
+    [HomeIsarModelSchema],
+    directory: (await getApplicationDocumentsDirectory())
+        .path, // Use writable directory
+  );
+  sl.registerLazySingleton<Isar>(() => isar);
 
   sl.registerLazySingleton<Dio>(() => Dio());
 
@@ -70,16 +83,28 @@ Future<void> initializeDependencies() async {
   );
 
   // Home
+  sl.registerLazySingleton<HomeLocalDataSource>(
+    () => HomeLocalDataSourceImpl(sl<Isar>()),
+  );
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(apiClient: sl<ApiClient>()),
   );
   sl.registerLazySingleton<HomeRepo>(
-    () => HomeRepoImpl(remoteDataSource: sl<HomeRemoteDataSource>()),
+    () => HomeRepoImpl(
+      remoteDataSource: sl<HomeRemoteDataSource>(),
+      localDataSource: sl<HomeLocalDataSource>(),
+    ),
   );
-  sl.registerLazySingleton<GetHomeUseCase>(
-    () => GetHomeUseCase(homeRepo: sl<HomeRepo>()),
+  sl.registerLazySingleton<GetHomeStreamUseCase>(
+    () => GetHomeStreamUseCase(homeRepo: sl<HomeRepo>()),
+  );
+  sl.registerLazySingleton<SyncHomeUseCase>(
+    () => SyncHomeUseCase(homeRepo: sl<HomeRepo>()),
   );
   sl.registerFactory<HomeCubit>(
-    () => HomeCubit(sl<GetHomeUseCase>()),
+    () => HomeCubit(
+      getHomeStreamUseCase: sl<GetHomeStreamUseCase>(),
+      syncHomeUseCase: sl<SyncHomeUseCase>(),
+    ),
   );
 }

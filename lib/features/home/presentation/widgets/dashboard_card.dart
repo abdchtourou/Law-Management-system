@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 // If you use SVG icons, uncomment this and use SvgPicture instead of Icon.
 // import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,7 +16,7 @@ class DashboardCard extends StatelessWidget {
   });
 
   final String title;
-  final List<String> items;
+  final List items;
   final Widget leading; // e.g. Icon(...) or SvgPicture.asset(...)
   final Color background;
   final VoidCallback? onTap;
@@ -67,14 +68,57 @@ class DashboardCard extends StatelessWidget {
                         ...items.map(
                               (t) => Padding(
                             padding:  EdgeInsets.only(bottom: 8.0.h),
-                            child: Text(
-                              t,
-                              style: TextStyle(
-                                color: const Color(0xffB0BEC5),
-                                fontSize: 11.sp,
-                                height: 1.3,
-                              ),
-                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "  قضية ${t.taskId} :",
+                                  style: TextStyle(
+                                    color: const Color(0xffB0BEC5),
+                                    fontSize: 11.sp,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                ),
+
+                                Text(
+                                  "  ${t.title}",
+                                  style: TextStyle(
+                                    color: const Color(0xffB0BEC5),
+                                    fontSize: 11.sp,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textDirection: TextDirection.rtl,
+                                ),
+
+                                Text(
+                                  "  ${t.assigneeName}",
+                                  style: TextStyle(
+                                    color: const Color(0xffB0BEC5),
+                                    fontSize: 11.sp,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 1,
+                                  textDirection: TextDirection.rtl,
+                                ),
+
+                                Expanded(
+                                  child: Text(
+                                    "  ${t.statusName}",
+                                    style: TextStyle(
+                                      color: const Color(0xffB0BEC5),
+                                      fontSize: 11.sp,
+                                      height: 1.3,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              ],
+                            )
+                                ,
                           ),
                         ),
                       ],

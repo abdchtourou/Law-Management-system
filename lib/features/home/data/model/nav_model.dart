@@ -1,25 +1,26 @@
 import 'package:flutter/cupertino.dart';
+import 'package:equatable/equatable.dart';
 
-class NavModel{
+class NavModel {
   final Widget page;
   final GlobalKey<NavigatorState> navKey;
 
   NavModel({required this.page, required this.navKey});
-
-
-
 }
-class HomeModel {
+class HomeModel extends Equatable {
   LegalCasesStats? legalCasesStats;
   TasksStats? tasksStats;
   UsersStats? usersStats;
   List<RecentTasks>? recentTasks;
+  List<RecentCases>? recentCases;
 
-  HomeModel(
-      {this.legalCasesStats,
-        this.tasksStats,
-        this.usersStats,
-        this.recentTasks});
+  HomeModel({
+    this.legalCasesStats,
+    this.tasksStats,
+    this.usersStats,
+    this.recentTasks,
+    this.recentCases,
+  });
 
   HomeModel.fromJson(Map<String, dynamic> json) {
     legalCasesStats = json['legal_cases_stats'] != null
@@ -35,6 +36,12 @@ class HomeModel {
       recentTasks = <RecentTasks>[];
       json['recent_tasks'].forEach((v) {
         recentTasks!.add(RecentTasks.fromJson(v));
+      });
+    }
+    if (json['recent_cases'] != null) {
+      recentCases = <RecentCases>[];
+      json['recent_cases'].forEach((v) {
+        recentCases!.add(RecentCases.fromJson(v));
       });
     }
   }
@@ -55,17 +62,21 @@ class HomeModel {
     }
     return data;
   }
+
+  @override
+  List<Object?> get props =>
+      [legalCasesStats, tasksStats, usersStats, recentTasks, recentCases];
 }
 
-class LegalCasesStats {
+class LegalCasesStats extends Equatable {
   int? total;
-  int? completionRate;
+  double? completionRate;
 
   LegalCasesStats({this.total, this.completionRate});
 
   LegalCasesStats.fromJson(Map<String, dynamic> json) {
-    total = json['total'];
-    completionRate = json['completion_rate'];
+    total = json['total'] ?? 0;
+    completionRate = json['completion_rate'] ?? 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -74,11 +85,14 @@ class LegalCasesStats {
     data['completion_rate'] = completionRate;
     return data;
   }
+
+  @override
+  List<Object?> get props => [total, completionRate];
 }
 
-class TasksStats {
+class TasksStats extends Equatable {
   int? total;
-  double? completedCount;
+  int? completedCount;
   double? completionRate;
 
   TasksStats({this.total, this.completedCount, this.completionRate});
@@ -96,9 +110,12 @@ class TasksStats {
     data['completion_rate'] = completionRate;
     return data;
   }
+
+  @override
+  List<Object?> get props => [total, completedCount, completionRate];
 }
 
-class UsersStats {
+class UsersStats extends Equatable {
   int? total;
   int? maleCount;
   int? femaleCount;
@@ -122,9 +139,12 @@ class UsersStats {
     data['male_percentage'] = malePercentage;
     return data;
   }
+
+  @override
+  List<Object?> get props => [total, maleCount, femaleCount, malePercentage];
 }
 
-class RecentTasks {
+class RecentTasks extends Equatable {
   int? taskId;
   String? title;
   String? assigneeName;
@@ -133,10 +153,10 @@ class RecentTasks {
 
   RecentTasks(
       {this.taskId,
-        this.title,
-        this.assigneeName,
-        this.statusName,
-        this.createdAt});
+      this.title,
+      this.assigneeName,
+      this.statusName,
+      this.createdAt});
 
   RecentTasks.fromJson(Map<String, dynamic> json) {
     taskId = json['task_id'];
@@ -155,4 +175,35 @@ class RecentTasks {
     data['created_at'] = createdAt;
     return data;
   }
+
+  @override
+  List<Object?> get props =>
+      [taskId, title, assigneeName, statusName, createdAt];
+}
+
+class RecentCases extends Equatable {
+  int? taskId;
+  String? title;
+  String? assigneeName;
+  String? statusName;
+  String? createdAt;
+
+  RecentCases(
+      {this.taskId,
+      this.title,
+      this.assigneeName,
+      this.statusName,
+      this.createdAt});
+
+  RecentCases.fromJson(Map<String, dynamic> json) {
+    taskId = json['legalcase_id'];
+    title = json['legalcase_title'];
+    assigneeName = json['client_name'];
+    statusName = json['status_name'];
+    createdAt = json['created_at'];
+  }
+
+  @override
+  List<Object?> get props =>
+      [taskId, title, assigneeName, statusName, createdAt];
 }

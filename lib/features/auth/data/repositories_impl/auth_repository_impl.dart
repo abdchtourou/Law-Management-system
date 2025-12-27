@@ -30,9 +30,9 @@ class AuthRepositoryImpl implements AuthRepository {
           email: email,
           password: password,
         );
-        if (rememberMe) {
-          await localDataSource.cacheUser(user);
-        }
+        // Always cache user for session token access.
+        // The rememberMe flag controls persistence across app restarts.
+        await localDataSource.cacheUser(user, rememberMe: rememberMe);
         return Right(user);
       } on ServerException catch (e) {
         return Left(ServerFailure(e.message));
@@ -93,6 +93,11 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserModel?>> getCurrentUser() async {
     try {
+      final isRemembered = await localDataSource.isRemembered();
+      if (!isRemembered) {
+        await localDataSource.clearCache();
+        return const Right(null);
+      }
       final user = await localDataSource.getCachedUser();
       return Right(user);
     } on CacheException catch (e) {

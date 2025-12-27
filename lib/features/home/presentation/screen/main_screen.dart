@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
       NavModel(
         navKey: homeNavKey,
         page: BlocProvider(
-          create: (context) => sl<HomeCubit>()..getHomeData(),
+          create: (context) => sl<HomeCubit>(),
           child: const HomeScreen(),
         ),
       ),
