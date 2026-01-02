@@ -10,8 +10,9 @@ class LabeledTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final int maxLines;
   final bool obscureText;
+  final ValueChanged<String>? onChanged;
 
-   const LabeledTextField({
+  const LabeledTextField({
     super.key,
     required this.label,
     required this.hint,
@@ -19,17 +20,17 @@ class LabeledTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
     this.obscureText = false,
+    this.onChanged,
   });
 
   InputDecoration _deco() {
     return InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(color: const Color(0xFF98A2AB), fontSize: 14.sp),
-      contentPadding:
-       EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+      contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(6),
-        borderSide:  const BorderSide(color: ColorsManager.accent, width: 1),
+        borderSide: const BorderSide(color: ColorsManager.accent, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(6.r),
@@ -45,16 +46,14 @@ class LabeledTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style:  TextStyles.font14BlackBold
-        ),
-         SizedBox(height: 6.h),
+        Text(label, style: TextStyles.font14BlackBold),
+        SizedBox(height: 6.h),
         TextField(
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
           obscureText: obscureText,
+          onChanged: onChanged,
           decoration: _deco(),
         ),
       ],

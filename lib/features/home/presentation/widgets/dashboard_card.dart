@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 
 // If you use SVG icons, uncomment this and use SvgPicture instead of Icon.
 // import 'package:flutter_svg/flutter_svg.dart';
@@ -31,7 +32,7 @@ class DashboardCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(24),
         child: Container(
-          padding:  EdgeInsets.symmetric(vertical: 18.h,horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16),
           decoration: BoxDecoration(
             color: background,
             borderRadius: BorderRadius.circular(24),
@@ -57,21 +58,21 @@ class DashboardCard extends StatelessWidget {
                       children: [
                         Text(
                           title,
-                          style:  TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w800,
                             height: 1.2,
                           ),
                         ),
-                         SizedBox(height: 9.h),
+                        SizedBox(height: 9.h),
                         ...items.map(
-                              (t) => Padding(
-                            padding:  EdgeInsets.only(bottom: 8.0.h),
+                          (t) => Padding(
+                            padding: EdgeInsets.only(bottom: 8.0.h),
                             child: Row(
                               children: [
                                 Text(
-                                  "  قضية ${t.taskId} :",
+                                  "  ${AppLocalizations.of(context)!.translate('casePrefix')} ${t.taskId} :",
                                   style: TextStyle(
                                     color: const Color(0xffB0BEC5),
                                     fontSize: 11.sp,
@@ -79,7 +80,6 @@ class DashboardCard extends StatelessWidget {
                                   ),
                                   maxLines: 1,
                                 ),
-
                                 Text(
                                   "  ${t.title}",
                                   style: TextStyle(
@@ -91,7 +91,6 @@ class DashboardCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textDirection: TextDirection.rtl,
                                 ),
-
                                 Text(
                                   "  ${t.assigneeName}",
                                   style: TextStyle(
@@ -102,7 +101,6 @@ class DashboardCard extends StatelessWidget {
                                   maxLines: 1,
                                   textDirection: TextDirection.rtl,
                                 ),
-
                                 Expanded(
                                   child: Text(
                                     "  ${t.statusName}",
@@ -117,8 +115,7 @@ class DashboardCard extends StatelessWidget {
                                   ),
                                 ),
                               ],
-                            )
-                                ,
+                            ),
                           ),
                         ),
                       ],
@@ -135,7 +132,6 @@ class DashboardCard extends StatelessWidget {
                       ),
                     ),
                   ),
-
                 ],
               ),
               if (showChevron) ...[

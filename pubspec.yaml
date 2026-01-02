@@ -82,6 +82,7 @@ flutter:
   assets:
     - assets/font/
     - assets/svg/
+    - assets/lang/
     - production.env
     - staging.env
     - audit.env

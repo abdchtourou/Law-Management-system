@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 import 'package:lms/core/theming/styles.dart';
 
 class TaskSummaryCard extends StatelessWidget {
@@ -8,16 +9,16 @@ class TaskSummaryCard extends StatelessWidget {
     super.key,
     required this.total,
     required this.progress, // 0.0 .. 1.0
-    this.title = 'إجمالي المهام',
-    this.subtitle = 'نسبة الانجاز',
+    this.title,
+    this.subtitle,
     this.icon,
     this.color = const Color(0xFF245A78),
   });
 
   final int total;
   final double progress;
-  final String title;
-  final String subtitle;
+  final String? title;
+  final String? subtitle;
   final Widget? icon;
   final Color color;
 
@@ -58,14 +59,16 @@ class TaskSummaryCard extends StatelessWidget {
                     children: [
                       10.verticalSpace,
                       Text(
-                        '$title : $total',
+                        '${title ?? AppLocalizations.of(context)!.translate('totalTasks')} : $total',
                         style: TextStyles.font12BlackExtraBold,
                         textAlign: TextAlign.end,
                       ),
-                       SizedBox(height: 12.h),
+                      SizedBox(height: 12.h),
                       Text(
-                        subtitle,
-                        style:  TextStyle(
+                        subtitle ??
+                            AppLocalizations.of(context)!
+                                .translate('completionRate'),
+                        style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w800,
                           color: const Color(0xFF6B8796),
@@ -103,7 +106,6 @@ class _SemiGauge extends StatelessWidget {
     const double stroke = 6;
     const double gaugeWidth = 100;
     const double gaugeHeight = 30;
-
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -186,8 +188,7 @@ class _SemiGaugePainter extends CustomPainter {
   @override
   bool shouldRepaint(_SemiGaugePainter old) =>
       old.progress != progress ||
-          old.color != color ||
-          old.strokeWidth != strokeWidth ||
-          old.bgColor != bgColor;
+      old.color != color ||
+      old.strokeWidth != strokeWidth ||
+      old.bgColor != bgColor;
 }
-

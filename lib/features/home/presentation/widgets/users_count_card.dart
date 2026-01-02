@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 import 'package:lms/core/constants/image_constants.dart';
 import 'package:lms/core/theming/colorsManager.dart';
 
@@ -45,7 +46,7 @@ class UsersCountCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'عدد المستخدمين: $total',
+                    '${AppLocalizations.of(context)!.translate('usersCount')}: $total',
                     textAlign: TextAlign.end,
                     style: TextStyle(
                       fontSize: 12.sp,

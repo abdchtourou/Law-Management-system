@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 import 'package:lms/core/routing/app_router.dart';
 import 'package:env_banner/env_banner.dart';
 import 'core/config/env_config.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
                   Locale('en'),
                 ],
                 localizationsDelegates: const [
+                  AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,

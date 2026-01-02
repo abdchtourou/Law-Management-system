@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-const _blue = Color(0xFF2C617B);      // الأزرق الداكن بالشكل
-const _barBg = Color(0xFFD3DBE0);     // خلفية شريط التقدم
+import 'package:lms/core/utils/app_localizations.dart';
+
+const _blue = Color(0xFF2C617B); // الأزرق الداكن بالشكل
+const _barBg = Color(0xFFD3DBE0); // خلفية شريط التقدم
 const _labelGrey = Color(0xFF6B8796);
+
 class ClientsProgressCard extends StatelessWidget {
   const ClientsProgressCard({
     super.key,
@@ -40,7 +43,7 @@ class ClientsProgressCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Text(
-                  'عدد العملاء: $total',
+                  '${AppLocalizations.of(context)!.translate('clientsCount')}: $total',
                   textAlign: TextAlign.end,
                   style: TextStyle(
                     fontSize: 12.sp,
@@ -50,12 +53,10 @@ class ClientsProgressCard extends StatelessWidget {
                   ),
                 ),
                 12.w.horizontalSpace,
-
                 Icon(Icons.groups_outlined, size: 32.r, color: _blue),
               ],
             ),
             14.h.verticalSpace,
-
             _PillProgress(
               value: maleRatio,
               height: 16.h,
@@ -63,13 +64,16 @@ class ClientsProgressCard extends StatelessWidget {
               fillColor: _blue,
               label: '$pct%',
             ),
-
             10.h.verticalSpace,
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _GenderLabel(text: 'إناث', active: false),
-                _GenderLabel(text: 'ذكور', active: true),
+                _GenderLabel(
+                    text: AppLocalizations.of(context)!.translate('female'),
+                    active: false),
+                _GenderLabel(
+                    text: AppLocalizations.of(context)!.translate('male'),
+                    active: true),
               ],
             ),
           ],

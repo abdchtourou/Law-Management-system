@@ -29,6 +29,8 @@ import '../features/user/data/repo/user_repo_impl.dart';
 import '../features/user/domain/repo/user_repo.dart';
 import '../features/user/domain/usecase/get_all_users_use_case.dart';
 import '../features/user/domain/usecase/sync_users_use_case.dart';
+import '../features/user/domain/usecase/create_user_use_case.dart';
+import '../features/user/presentation/cubit/create_user_cubit.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Service locator instance
@@ -127,6 +129,13 @@ Future<void> initializeDependencies() async {
   );
   sl.registerLazySingleton<SyncUsersUseCase>(
     () => SyncUsersUseCase(userRepo: sl<UserRepo>()),
+  );
+  sl.registerLazySingleton<CreateUserUseCase>(
+    () => CreateUserUseCase(sl<UserRepo>()),
+  );
+
+  sl.registerFactory<CreateUserCubit>(
+    () => CreateUserCubit(createUserUseCase: sl<CreateUserUseCase>()),
   );
 
   // Home Cubit (Updated)

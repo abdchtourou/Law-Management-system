@@ -7,6 +7,7 @@ import 'package:lms/core/constants/image_constants.dart';
 import 'package:lms/core/theming/colorsManager.dart';
 
 // ... (keep your existing widget imports here)
+import '../../../../core/utils/app_localizations.dart';
 import '../widgets/app_side_drawer.dart';
 import '../widgets/cases_summary_card.dart';
 import '../widgets/clients_progress_card.dart';
@@ -95,7 +96,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                           32.h.verticalSpace,
                           DashboardCard(
-                            title: 'أحدث القضايا',
+                            title: AppLocalizations.of(context)!
+                                .translate('latestCases'),
                             leading: const Icon(Icons.balance_outlined,
                                 color: Colors.white, size: 64),
                             items: data.recentCases!,
@@ -104,7 +106,8 @@ class HomeScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 28),
                           DashboardCard(
-                            title: 'المهام',
+                            title: AppLocalizations.of(context)!
+                                .translate('tasks'),
                             leading: SvgPicture.asset(
                               lawIconSvg,
                               colorFilter: const ColorFilter.mode(
@@ -153,7 +156,8 @@ class HomeScreen extends StatelessWidget {
                                     color: Colors.white, size: 16),
                                 8.horizontalSpace,
                                 Text(
-                                  "تحديث البيانات الجديدة",
+                                  AppLocalizations.of(context)!
+                                      .translate('updateNewData'),
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,

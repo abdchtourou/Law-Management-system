@@ -4,6 +4,7 @@ import '../../../../auth/data/models/user_model.dart';
 
 abstract class UserRemoteDataSource {
   Future<List<User>> getAllUsers();
+  Future<void> createUser(Map<String, dynamic> userData);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -22,6 +23,19 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       return userResponse.users ?? [];
     } catch (e) {
       print('aslkjhdfkjh ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> createUser(Map<String, dynamic> userData) async {
+    try {
+      await apiClient.post(
+        '/users/api/users/', // Assuming same endpoint for POST
+        userData,
+      );
+    } catch (e) {
+      print('Error creating user: ${e.toString()}');
       rethrow;
     }
   }

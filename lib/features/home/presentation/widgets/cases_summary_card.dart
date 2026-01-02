@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 import 'package:lms/core/constants/image_constants.dart';
 
 class CasesSummaryCard extends StatelessWidget {
@@ -43,7 +44,7 @@ class CasesSummaryCard extends StatelessWidget {
               const SizedBox(width: 1),
               Expanded(
                 child: Text(
-                  'إجمالي القضايا: $total',
+                  '${AppLocalizations.of(context)!.translate('totalCases')}: $total',
                   textAlign: TextAlign.end,
                   style: const TextStyle(
                     fontSize: 12,
@@ -57,11 +58,14 @@ class CasesSummaryCard extends StatelessWidget {
           const SizedBox(height: 2),
           Row(
             children: [
-              const _StatusLabel(text: 'مفتوحة'),
+              _StatusLabel(
+                  text: AppLocalizations.of(context)!.translate('open')),
               10.horizontalSpace,
-              const _StatusLabel(text: 'مغلقة'),
+              _StatusLabel(
+                  text: AppLocalizations.of(context)!.translate('closed')),
               15.horizontalSpace,
-              const _StatusLabel(text: 'قيد الانجاز'),
+              _StatusLabel(
+                  text: AppLocalizations.of(context)!.translate('inProgress')),
             ],
           ),
           const SizedBox(height: 4),

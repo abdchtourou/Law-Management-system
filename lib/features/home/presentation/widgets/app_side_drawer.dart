@@ -5,6 +5,9 @@ import 'package:lms/core/routing/routes.dart';
 import 'package:lms/core/theming/styles.dart';
 import 'package:lms/core/utils/extensions.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/utils/LocaleCubit.dart';
+import '../../../../core/utils/app_localizations.dart';
 import '../../../../core/constants/image_constants.dart';
 
 class AppSideDrawer extends StatelessWidget {
@@ -26,28 +29,30 @@ class AppSideDrawer extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 18),
             children: [
               // Header (avatar + name + role)
-              const Row(
+              Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 22,
-                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=8'),
+                    backgroundImage:
+                        NetworkImage('https://i.pravatar.cc/150?img=8'),
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Azunyan U. Wu',
                           style: TextStyle(
                             fontWeight: FontWeight.w800,
                             fontSize: 16,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        const SizedBox(height: 2),
                         Text(
-                          'Basic Member',
-                          style: TextStyle(
+                          AppLocalizations.of(context)!
+                              .translate('basicMember'),
+                          style: const TextStyle(
                             color: Color(0xFF94A3B8),
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -56,7 +61,19 @@ class AppSideDrawer extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.wb_sunny_outlined, color: grey),
+                  const Icon(Icons.wb_sunny_outlined, color: grey),
+                  // Language Switcher
+                  IconButton(
+                    icon: const Icon(Icons.language, color: grey),
+                    onPressed: () {
+                      final currentLocale = Localizations.localeOf(context);
+                      if (currentLocale.languageCode == 'ar') {
+                        context.read<LocaleCubit>().setEnglish();
+                      } else {
+                        context.read<LocaleCubit>().setArabic();
+                      }
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -64,11 +81,13 @@ class AppSideDrawer extends StatelessWidget {
               // Search
               TextField(
                 decoration: InputDecoration(
-                  hintText: 'نص مقترح',
+                  hintText: AppLocalizations.of(context)!
+                      .translate('searchPlaceholder'),
                   suffixIcon: const Icon(Icons.search, color: grey),
                   filled: true,
                   fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                     borderSide: const BorderSide(color: cardBorder),
@@ -85,70 +104,108 @@ class AppSideDrawer extends StatelessWidget {
               ),
 
               const SizedBox(height: 18),
-              const _SectionTitle('إدارة المستخدمين'),
+              _SectionTitle(
+                  AppLocalizations.of(context)!.translate('userSection')),
               _SectionCard(
                 children: [
                   _LineItem(
-                      title: 'إنشاء مستخدم جديد',
+                      title: AppLocalizations.of(context)!
+                          .translate('createNewUser'),
                       icon: personAddSvg,
                       onTap: () {
                         context.pushNamed(Routes.createUser);
                       }),
                   _LineItem(
-                    title: 'إدارة المستخدمين',
+                    title: AppLocalizations.of(context)!
+                        .translate('userManagement'),
                     icon: groupSvg,
                     onTap: () {
                       context.pushNamed(Routes.userManagement);
                     },
                   ),
-                   _LineItem(title: 'إنشاء عميل', icon: personAddSvg,onTap: () {
-                     context.pushNamed(Routes.createClient);
-
-                   }),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('createClient'),
+                      icon: personAddSvg,
+                      onTap: () {
+                        context.pushNamed(Routes.createClient);
+                      }),
                 ],
               ),
 
               const SizedBox(height: 16),
-              const _SectionTitle('إدارة القضايا'),
+              _SectionTitle(
+                  AppLocalizations.of(context)!.translate('caseSection')),
               _SectionCard(
                 children: [
                   _LineItem(
-                    title: 'إنشاء قضية قانونية',
+                    title: AppLocalizations.of(context)!
+                        .translate('createLegalCase'),
                     icon: gavelSvg,
                     onTap: () {
                       context.pushNamed(Routes.createLegalCase);
                     },
                   ),
                   _LineItem(
-                    title: 'إدارة القضايا القانونية',
+                    title: AppLocalizations.of(context)!
+                        .translate('manageLegalCases'),
                     icon: factCheckSvg,
                     onTap: () {
                       context.pushNamed(Routes.legalCaseManagement);
                     },
                   ),
-                  const _LineItem(title: 'إنشاء أنواع المهام', icon: folderOpenSvg),
-                  const _LineItem(title: 'إسناد المهام', icon: eventNoteSvg),
-                  const _LineItem(title: ' الموافقة على المهام', icon: trueMarkSvg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('createTaskTypes'),
+                      icon: folderOpenSvg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('assignTasks'),
+                      icon: eventNoteSvg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('approveTasks'),
+                      icon: trueMarkSvg),
                 ],
               ),
 
               const SizedBox(height: 16),
-              const _SectionTitle('الوكالة القانونية'),
-              const _SectionCard(
+              _SectionTitle(
+                  AppLocalizations.of(context)!.translate('agencySection')),
+              _SectionCard(
                 children: [
-                  _LineItem(title: 'إنشاء وكالة قانونية', icon: icon1Svg),
-                  _LineItem(title: 'إدارة الوكالة القانونية', icon: factCheckSvg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('createAgency'),
+                      icon: icon1Svg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('manageAgency'),
+                      icon: factCheckSvg),
                 ],
               ),
 
               const SizedBox(height: 16),
-              const _SectionTitle('الوثائق والمستندات'),
-              const _SectionCard(
+              _SectionTitle(
+                  AppLocalizations.of(context)!.translate('docsSection')),
+              _SectionCard(
                 children: [
-                  _LineItem(title: 'ملفات القضايا', icon: factCheckSvg),
-                  _LineItem(title: 'ملفات المهام', icon: factCheckSvg),
-                  _LineItem(title: 'ملفات الوكالة القانونية', icon: factCheckSvg),
-                  _LineItem(title: 'ملفات أخرى', icon: icon2Svg),
+                  _LineItem(
+                      title:
+                          AppLocalizations.of(context)!.translate('caseFiles'),
+                      icon: factCheckSvg),
+                  _LineItem(
+                      title:
+                          AppLocalizations.of(context)!.translate('taskFiles'),
+                      icon: factCheckSvg),
+                  _LineItem(
+                      title: AppLocalizations.of(context)!
+                          .translate('agencyFiles'),
+                      icon: factCheckSvg),
+                  _LineItem(
+                      title:
+                          AppLocalizations.of(context)!.translate('otherFiles'),
+                      icon: icon2Svg),
                 ],
               ),
 
@@ -157,9 +214,10 @@ class AppSideDrawer extends StatelessWidget {
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                 leading: const Icon(Icons.calendar_month_outlined, color: grey),
-                title: const Text(
-                  'التقويم',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                title: Text(
+                  AppLocalizations.of(context)!.translate('calendar'),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w800),
                 ),
                 onTap: () {},
               ),
@@ -184,9 +242,10 @@ class AppSideDrawer extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.logout, color: Colors.black87),
-                  label: const Text(
-                    'تسجيل الخروج',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                  label: Text(
+                    AppLocalizations.of(context)!.translate('logout'),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w800),
                   ),
                   onPressed: () {
                     // TODO: handle logout

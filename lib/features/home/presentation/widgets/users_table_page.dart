@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/core/utils/app_localizations.dart';
 import 'package:lms/features/auth/data/models/user_model.dart';
 
 enum UserStatus { online, idle, offline }
@@ -72,7 +73,8 @@ class _UsersTablePageState extends State<UsersTablePage> {
                         Expanded(
                           child: _RoundedField(
                             controller: _search,
-                            hint: 'Search...',
+                            hint: AppLocalizations.of(context)!
+                                .translate('tableSearchHint'),
                             icon: Icons.search,
                             onChanged: (_) => setState(() {}),
                           ),
@@ -106,7 +108,7 @@ class _UsersTablePageState extends State<UsersTablePage> {
                         ),
                         onPressed: () {},
                         label: Text(
-                          'إضافة مستخدم',
+                          AppLocalizations.of(context)!.translate('addUser'),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14.sp,
@@ -169,7 +171,7 @@ class _HeaderRow extends StatelessWidget {
           Expanded(
             flex: 1,
             child: Text(
-              'اخر تسجيل الدخول',
+              AppLocalizations.of(context)!.translate('lastLogin'),
               textAlign: TextAlign.right,
               style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w800),
             ),
@@ -184,7 +186,7 @@ class _HeaderRow extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'الاسم الكامل',
+                    AppLocalizations.of(context)!.translate('fullName'),
                     style:
                         TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w800),
                   ),
@@ -204,7 +206,7 @@ class _HeaderRow extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
-                'ID',
+                AppLocalizations.of(context)!.translate('id'),
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w800,
@@ -234,7 +236,9 @@ class _UserRowTile extends StatelessWidget {
       final isAm = dt.hour < 12;
       final hh = (dt.hour % 12 == 0) ? 12 : dt.hour % 12;
       final mm = dt.minute.toString().padLeft(2, '0');
-      final period = isAm ? 'صباحاً' : 'مساءً';
+      final period = isAm
+          ? AppLocalizations.of(context)!.translate('am')
+          : AppLocalizations.of(context)!.translate('pm');
       return '${dt.day}-${dt.month}-${dt.year}\n$hh:$mm $period';
     } catch (e) {
       return dateStr;
@@ -270,7 +274,10 @@ class _UserRowTile extends StatelessWidget {
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(user.fullName ?? 'Unknown', style: textStyle),
+                  child: Text(
+                      user.fullName ??
+                          AppLocalizations.of(context)!.translate('unknown'),
+                      style: textStyle),
                 ),
               ),
               // ID + status dot
@@ -329,7 +336,10 @@ class _FooterPager extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            'Page $page of $pages',
+            AppLocalizations.of(context)!
+                .translate('pageInfo')
+                .replaceAll('{page}', page.toString())
+                .replaceAll('{pages}', pages.toString()),
             style: const TextStyle(
               color: Color(0xFF475569),
               fontSize: 14,

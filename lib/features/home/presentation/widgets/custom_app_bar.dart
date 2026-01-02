@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:lms/core/utils/app_localizations.dart';
+
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
@@ -26,8 +28,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             // Left side (logo)
-            const Text(
-              'Logo',
+            Text(
+              AppLocalizations.of(context)!.translate('logo'),
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w800,
