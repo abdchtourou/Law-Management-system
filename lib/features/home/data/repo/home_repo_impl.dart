@@ -16,23 +16,26 @@ class HomeRepoImpl implements HomeRepo {
   });
 
   @override
+  Stream<HomeModel> getHomeStream() async* {
+    bool hasCheckedEmpty = false;
 
-  @override
-  Stream<HomeModel> getHomeStream() {
-    return localDataSource.getHomeStream().map((list) {
-      if (list.isEmpty) {
-        // Return an empty model or handle empty state.
-        // Returning a default model for now.
-        return HomeModel();
+    await for (final list in localDataSource.getHomeStream()) {
+      if (list.isEmpty && !hasCheckedEmpty) {
+        hasCheckedEmpty = true;
+        // Wait for sync to complete (triggered by Cubit) before continuing
+        // Don't yield anything here - wait for the next emission after sync
+        continue;
       }
-      return list.first.toEntity();
-    });
+
+      if (list.isNotEmpty) {
+        yield list.first.toEntity();
+      }
+    }
   }
 
   @override
   Future<Either<Failure, void>> syncHome() async {
     try {
-
       final remoteHome = await remoteDataSource.getHome();
       await localDataSource.cacheHome(HomeIsarModel.fromEntity(remoteHome));
       return const Right(null);

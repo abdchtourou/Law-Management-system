@@ -28,7 +28,8 @@ class HomeIsarModel {
   }
 
   static HomeIsarModel fromEntity(HomeModel model,
-      {String userId = 'currentUser'}) {
+      {String userId = 'currentUser'})
+  {
     return HomeIsarModel()
       ..userId = userId
       ..legalCasesStats = model.legalCasesStats != null

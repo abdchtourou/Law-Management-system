@@ -22,153 +22,156 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      appBar: const CustomAppBar(),
-      endDrawer: const AppSideDrawer(),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        child: BlocBuilder<HomeCubit, HomeState>(
-          builder: (context, state) {
-            if (state is HomeLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is HomeError) {
-              return Center(child: Text(state.message));
-            } else if (state is HomeSuccess) {
-              // 1. USE CURRENT DATA (The stable data)
-              final data = state.currentData;
+        extendBody: true,
+        appBar: const CustomAppBar(),
+        endDrawer: const AppSideDrawer(),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+          child: BlocBuilder<HomeCubit, HomeState>(
+            builder: (context, state) {
+              if (state is HomeLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is HomeError) {
+                return Center(child: Text(state.message));
+              } else if (state is HomeSuccess) {
+                // 1. USE CURRENT DATA (The stable data)
+                final data = state.currentData;
+                print('halskdfhkj h${state.currentUsers}');
 
-              return Stack(
-                children: [
-                  // --- The Main Content ---
-                  SingleChildScrollView(
-                    // Add top padding so the first card isn't hidden behind the button
-                    padding: EdgeInsets.only(top: state.hasUpdate ? 60.h : 0),
-                    child: Column(
-                      children: [
-                        // Removed LinearProgressIndicator to avoid confusion
+                return Stack(
+                  children: [
+                    // --- The Main Content ---
+                    SingleChildScrollView(
+                      // Add top padding so the first card isn't hidden behind the button
+                      padding: EdgeInsets.only(top: state.hasUpdate ? 60.h : 0),
+                      child: Column(
+                        children: [
+                          // Removed LinearProgressIndicator to avoid confusion
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TaskSummaryCard(
-                                total: data.tasksStats!.total ?? 0,
-                                progress: data.tasksStats!.completionRate!,
-                                icon: SvgPicture.asset(noteSvg, width: 50.w),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TaskSummaryCard(
+                                  total: data.tasksStats!.total ?? 0,
+                                  progress: data.tasksStats!.completionRate!,
+                                  icon: SvgPicture.asset(noteSvg, width: 50.w),
+                                ),
                               ),
-                            ),
-                            20.horizontalSpace,
-                            Expanded(
-                              child: CasesSummaryCard(
-                                total: data.legalCasesStats!.total!,
-                                openCount: 948,
-                                closedCount: 948,
-                                inProgressCount: 948,
+                              20.horizontalSpace,
+                              Expanded(
+                                child: CasesSummaryCard(
+                                  total: data.legalCasesStats!.total!,
+                                  openCount: 948,
+                                  closedCount: 948,
+                                  inProgressCount: 948,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        32.h.verticalSpace,
-                        Row(
-                          children: [
-                            Expanded(
-                              child: UsersCountCard(
-                                total: data.usersStats!.total!,
-                                avatars: const [
-                                  NetworkImage(
-                                      'https://i.pravatar.cc/150?img=1'),
-                                  NetworkImage(
-                                      'https://i.pravatar.cc/150?img=2'),
-                                  NetworkImage(
-                                      'https://i.pravatar.cc/150?img=3'),
-                                  NetworkImage(
-                                      'https://i.pravatar.cc/150?img=4'),
-                                ],
-                              ),
-                            ),
-                            20.w.horizontalSpace,
-                            const Expanded(
-                              child:
-                                  ClientsProgressCard(total: 100, maleRatio: 1),
-                            ),
-                          ],
-                        ),
-                        32.h.verticalSpace,
-                        DashboardCard(
-                          title: 'أحدث القضايا',
-                          leading: const Icon(Icons.balance_outlined,
-                              color: Colors.white, size: 64),
-                          items: data.recentCases!,
-                          background: const Color(0xFF3A3A3A),
-                          onTap: () {},
-                        ),
-                        const SizedBox(height: 28),
-                        DashboardCard(
-                          title: 'المهام',
-                          leading: SvgPicture.asset(
-                            lawIconSvg,
-                            colorFilter: const ColorFilter.mode(
-                                ColorsManager.accent, BlendMode.srcIn),
+                            ],
                           ),
-                          items: data.recentTasks!,
-                          background: const Color(0xFF000000),
-                          onTap: () {},
-                        ),
-                        30.h.verticalSpace,
-                        const UsersTablePage(),
-                      ],
-                    ),
-                ),
-
-                // --- Animated Update Button (Old UI with Animation) ---
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  top: state.hasUpdate ? 0 : -60,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        context.read<HomeCubit>().applyUpdate();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                          color: ColorsManager.accent,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.arrow_upward, color: Colors.white, size: 16),
-                            8.horizontalSpace,
-                            Text(
-                              "تحديث البيانات الجديدة",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12.sp,
+                          32.h.verticalSpace,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: UsersCountCard(
+                                  total: data.usersStats!.total!,
+                                  avatars: const [
+                                    NetworkImage(
+                                        'https://i.pravatar.cc/150?img=1'),
+                                    NetworkImage(
+                                        'https://i.pravatar.cc/150?img=2'),
+                                    NetworkImage(
+                                        'https://i.pravatar.cc/150?img=3'),
+                                    NetworkImage(
+                                        'https://i.pravatar.cc/150?img=4'),
+                                  ],
+                                ),
                               ),
+                              20.w.horizontalSpace,
+                              const Expanded(
+                                child: ClientsProgressCard(
+                                    total: 100, maleRatio: 1),
+                              ),
+                            ],
+                          ),
+                          32.h.verticalSpace,
+                          DashboardCard(
+                            title: 'أحدث القضايا',
+                            leading: const Icon(Icons.balance_outlined,
+                                color: Colors.white, size: 64),
+                            items: data.recentCases!,
+                            background: const Color(0xFF3A3A3A),
+                            onTap: () {},
+                          ),
+                          const SizedBox(height: 28),
+                          DashboardCard(
+                            title: 'المهام',
+                            leading: SvgPicture.asset(
+                              lawIconSvg,
+                              colorFilter: const ColorFilter.mode(
+                                  ColorsManager.accent, BlendMode.srcIn),
                             ),
-                          ],
+                            items: data.recentTasks!,
+                            background: const Color(0xFF000000),
+                            onTap: () {},
+                          ),
+                          30.h.verticalSpace,
+                          UsersTablePage(users: state.currentUsers),
+                        ],
+                      ),
+                    ),
+
+                    // --- Animated Update Button (Old UI with Animation) ---
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      top: state.hasUpdate ? 0 : -60,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            context.read<HomeCubit>().applyUpdate();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 8.h),
+                            decoration: BoxDecoration(
+                              color: ColorsManager.accent,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.arrow_upward,
+                                    color: Colors.white, size: 16),
+                                8.horizontalSpace,
+                                Text(
+                                  "تحديث البيانات الجديدة",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    ));
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ));
   }
 }

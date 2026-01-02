@@ -22,6 +22,13 @@ import '../features/home/domain/repo/home_repo.dart';
 import '../features/home/domain/usecase/get_home_stream_use_case.dart';
 import '../features/home/domain/usecase/sync_home_use_case.dart';
 import '../features/home/presentation/cubit/home_cubit.dart';
+import '../features/user/data/models/isar/user_isar_model.dart';
+import '../features/user/data/datasource/local/user_local_data_source.dart';
+import '../features/user/data/datasource/remote/user_remote_data_source.dart';
+import '../features/user/data/repo/user_repo_impl.dart';
+import '../features/user/domain/repo/user_repo.dart';
+import '../features/user/domain/usecase/get_all_users_use_case.dart';
+import '../features/user/domain/usecase/sync_users_use_case.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Service locator instance
@@ -33,7 +40,7 @@ Future<void> initializeDependencies() async {
 
   // Initialize Isar (using empty string for directory uses the default location)
   final isar = await Isar.open(
-    [HomeIsarModelSchema],
+    [HomeIsarModelSchema, UserIsarModelSchema],
     directory: (await getApplicationDocumentsDirectory())
         .path, // Use writable directory
   );
@@ -101,10 +108,34 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<SyncHomeUseCase>(
     () => SyncHomeUseCase(homeRepo: sl<HomeRepo>()),
   );
+
+  // User Feature
+  sl.registerLazySingleton<UserLocalDataSource>(
+    () => UserLocalDataSourceImpl(sl<Isar>()),
+  );
+  sl.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceImpl(sl<ApiClient>()),
+  );
+  sl.registerLazySingleton<UserRepo>(
+    () => UserRepoImpl(
+      remoteDataSource: sl<UserRemoteDataSource>(),
+      localDataSource: sl<UserLocalDataSource>(),
+    ),
+  );
+  sl.registerLazySingleton<GetAllUsersUseCase>(
+    () => GetAllUsersUseCase(userRepo: sl<UserRepo>()),
+  );
+  sl.registerLazySingleton<SyncUsersUseCase>(
+    () => SyncUsersUseCase(userRepo: sl<UserRepo>()),
+  );
+
+  // Home Cubit (Updated)
   sl.registerFactory<HomeCubit>(
     () => HomeCubit(
       getHomeStreamUseCase: sl<GetHomeStreamUseCase>(),
       syncHomeUseCase: sl<SyncHomeUseCase>(),
+      getAllUsersUseCase: sl<GetAllUsersUseCase>(),
+      syncUsersUseCase: sl<SyncUsersUseCase>(),
     ),
   );
 }

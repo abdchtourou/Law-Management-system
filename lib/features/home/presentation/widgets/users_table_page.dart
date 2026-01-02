@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lms/features/auth/data/models/user_model.dart';
 
 enum UserStatus { online, idle, offline }
 
-class UserRow {
-  final int id;
-  final String fullName;
-  final DateTime lastLogin;
-  final UserStatus status;
-
-  UserRow({
-    required this.id,
-    required this.fullName,
-    required this.lastLogin,
-    required this.status,
-  });
-}
-
 class UsersTablePage extends StatefulWidget {
-  const UsersTablePage({super.key});
+  final List<User> users;
+
+  const UsersTablePage({super.key, this.users = const []});
 
   @override
   State<UsersTablePage> createState() => _UsersTablePageState();
@@ -30,30 +19,21 @@ class _UsersTablePageState extends State<UsersTablePage> {
   int page = 1;
   final int perPage = 8;
 
-  // Demo data
-  late List<UserRow> all = List.generate(80, (i) {
-    final id = i + 1;
-    return UserRow(
-      id: id,
-      fullName: 'محمد سعيد',
-      lastLogin: DateTime(2020, 8, 11, id.isEven ? 10 : 22, 30),
-      status: id % 3 == 0
-          ? UserStatus.idle
-          : id % 2 == 0
-              ? UserStatus.offline
-              : UserStatus.online,
-    );
-  });
-
   @override
   Widget build(BuildContext context) {
     Theme.of(context);
-    final filtered = all.where((u) {
+    final filtered = widget.users.where((u) {
       final q = _search.text.trim();
       if (q.isEmpty) return true;
-      return u.fullName.contains(q) || '#${u.id}'.contains(q);
+      final name = u.fullName?.toLowerCase() ?? '';
+      final id = u.userId?.toString() ?? '';
+      return name.contains(q.toLowerCase()) || '#$id'.contains(q);
     }).toList()
-      ..sort((a, b) => sortAsc ? a.fullName.compareTo(b.fullName) : b.fullName.compareTo(a.fullName));
+      ..sort((a, b) {
+        final nameA = a.fullName ?? '';
+        final nameB = b.fullName ?? '';
+        return sortAsc ? nameA.compareTo(nameB) : nameB.compareTo(nameA);
+      });
 
     final pageCount = (filtered.length / perPage).ceil().clamp(1, 9999);
     page = page.clamp(1, pageCount);
@@ -64,7 +44,6 @@ class _UsersTablePageState extends State<UsersTablePage> {
     return SafeArea(
       child: Center(
         child: ConstrainedBox(
-
           constraints: const BoxConstraints(maxWidth: 720),
           child: Padding(
             padding: const EdgeInsets.all(0),
@@ -72,7 +51,7 @@ class _UsersTablePageState extends State<UsersTablePage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: const Color(0xFFE2E8F0)) ,
+                border: Border.all(color: const Color(0xFFE2E8F0)),
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x1A000000),
@@ -150,7 +129,8 @@ class _UsersTablePageState extends State<UsersTablePage> {
                     page: page,
                     pages: pageCount,
                     onPrev: page > 1 ? () => setState(() => page--) : null,
-                    onNext: page < pageCount ? () => setState(() => page++) : null,
+                    onNext:
+                        page < pageCount ? () => setState(() => page++) : null,
                   ),
                 ],
               ),
@@ -173,8 +153,6 @@ class _HeaderRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Container(
       margin: const EdgeInsets.only(top: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -193,7 +171,7 @@ class _HeaderRow extends StatelessWidget {
             child: Text(
               'اخر تسجيل الدخول',
               textAlign: TextAlign.right,
-              style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w800),
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w800),
             ),
           ),
           // Full name + sort chevron
@@ -207,28 +185,31 @@ class _HeaderRow extends StatelessWidget {
                 children: [
                   Text(
                     'الاسم الكامل',
-                    style: TextStyle(fontSize: 12.sp,fontWeight: FontWeight.w800),
+                    style:
+                        TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w800),
                   ),
                   const SizedBox(width: 6),
                   Icon(
                     sortAsc ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                     size: 18,
                     color: const Color(0xFF6B7280),
-
                   ),
                 ],
               ),
             ),
           ),
           // ID
-           Expanded(
+          Expanded(
             flex: 1,
             child: Align(
               alignment: Alignment.centerRight,
-              child: Text('ID',style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w800,
-              ),),
+              child: Text(
+                'ID',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
             ),
           ),
         ],
@@ -240,26 +221,24 @@ class _HeaderRow extends StatelessWidget {
 class _UserRowTile extends StatelessWidget {
   const _UserRowTile({required this.user});
 
-  final UserRow user;
+  final User user;
 
-  Color _statusColor(UserStatus s) {
-    switch (s) {
-      case UserStatus.online:
-        return const Color(0xFF22C55E); // green
-      case UserStatus.idle:
-        return const Color(0xFFFACC15); // yellow
-      case UserStatus.offline:
-        return const Color(0xFFCBD5E1); // gray
-    }
+  Color _statusColor(bool isActive) {
+    return isActive ? const Color(0xFF22C55E) : const Color(0xFFCBD5E1);
   }
 
-  String _arabicDateTime(BuildContext context, DateTime dt) {
-    // 11-8-2020  10:30 صباحاً / مساءً
-    final isAm = dt.hour < 12;
-    final hh = (dt.hour % 12 == 0) ? 12 : dt.hour % 12;
-    final mm = dt.minute.toString().padLeft(2, '0');
-    final period = isAm ? 'صباحاً' : 'مساءً';
-    return '${dt.day}-${dt.month}-${dt.year}\n$hh:$mm $period';
+  String _arabicDateTime(BuildContext context, String? dateStr) {
+    if (dateStr == null) return 'N/A';
+    try {
+      final dt = DateTime.parse(dateStr);
+      final isAm = dt.hour < 12;
+      final hh = (dt.hour % 12 == 0) ? 12 : dt.hour % 12;
+      final mm = dt.minute.toString().padLeft(2, '0');
+      final period = isAm ? 'صباحاً' : 'مساءً';
+      return '${dt.day}-${dt.month}-${dt.year}\n$hh:$mm $period';
+    } catch (e) {
+      return dateStr;
+    }
   }
 
   @override
@@ -291,7 +270,7 @@ class _UserRowTile extends StatelessWidget {
                 flex: 1,
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text(user.fullName, style: textStyle),
+                  child: Text(user.fullName ?? 'Unknown', style: textStyle),
                 ),
               ),
               // ID + status dot
@@ -300,13 +279,13 @@ class _UserRowTile extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text('#${user.id}', style: textStyle),
+                    Text('#${user.userId ?? '-'}', style: textStyle),
                     const SizedBox(width: 10),
                     Container(
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: _statusColor(user.status),
+                        color: _statusColor(user.isActive ?? false),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -455,7 +434,9 @@ class _CircleSoftButton extends StatelessWidget {
           height: 40.h,
           child: Icon(
             icon,
-            color: onTap == null ? const Color(0xFFCBD5E1) : const Color(0xFF111827),
+            color: onTap == null
+                ? const Color(0xFFCBD5E1)
+                : const Color(0xFF111827),
           ),
         ),
       ),

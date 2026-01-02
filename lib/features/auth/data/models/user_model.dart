@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 class UserModel {
   String? message;
   User? user;
@@ -8,8 +10,7 @@ class UserModel {
   UserModel.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     user = json['user'] != String ? User.fromJson(json['user']) : null;
-    tokens =
-    json['tokens'] != String ? Tokens.fromJson(json['tokens']) : null;
+    tokens = json['tokens'] != String ? Tokens.fromJson(json['tokens']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,7 +26,7 @@ class UserModel {
   }
 }
 
-class User {
+class User extends Equatable {
   int? userId;
   int? userAuthId;
   int? role;
@@ -52,38 +53,50 @@ class User {
   String? lastLogin;
   String? createdAt;
   String? updatedAt;
-  String? createdBy;
+  int? createdBy;
   String? createdByName;
 
   User(
       {this.userId,
-        this.userAuthId,
-        this.role,
-        this.roleName,
-        this.firstName,
-        this.lastName,
-        this.fatherName,
-        this.motherName,
-        this.fullName,
-        this.gender,
-        this.birthDate,
-        this.age,
-        this.address,
-        this.nationalId,
-        this.country,
-        this.governorate,
-        this.mainPhone,
-        this.secondaryPhone,
-        this.email,
-        this.profilePicture,
-        this.idPicture,
-        this.passportPicture,
-        this.isActive,
-        this.lastLogin,
-        this.createdAt,
-        this.updatedAt,
-        this.createdBy,
-        this.createdByName});
+      this.userAuthId,
+      this.role,
+      this.roleName,
+      this.firstName,
+      this.lastName,
+      this.fatherName,
+      this.motherName,
+      this.fullName,
+      this.gender,
+      this.birthDate,
+      this.age,
+      this.address,
+      this.nationalId,
+      this.country,
+      this.governorate,
+      this.mainPhone,
+      this.secondaryPhone,
+      this.email,
+      this.profilePicture,
+      this.idPicture,
+      this.passportPicture,
+      this.isActive,
+      this.lastLogin,
+      this.createdAt,
+      this.updatedAt,
+      this.createdBy,
+      this.createdByName});
+
+  @override
+  List<Object?> get props => [
+        userId,
+        updatedAt,
+        lastLogin,
+        isActive,
+        fullName,
+        email,
+        role,
+        userAuthId,
+      ];
 
   User.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
