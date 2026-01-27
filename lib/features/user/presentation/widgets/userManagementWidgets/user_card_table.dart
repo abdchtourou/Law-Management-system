@@ -6,7 +6,7 @@ import 'package:lms/features/user/presentation/widgets/userManagementWidgets/use
 import '../../../../../core/constants/image_constants.dart';
 import '../../../../../core/theming/colorsManager.dart';
 import '../../../../../core/theming/styles.dart';
-import '../../screen/user_management_screen.dart';
+import '../../../../auth/data/models/user_model.dart';
 
 class UserCardsTable extends StatefulWidget {
   const UserCardsTable({
@@ -16,9 +16,9 @@ class UserCardsTable extends StatefulWidget {
     this.onCardTap,
   });
 
-  final List<UserCardData>? data;
+  final List<User>? data;
   final VoidCallback? onAddUser;
-  final void Function(UserCardData user)? onCardTap;
+  final void Function(User user)? onCardTap;
 
   @override
   State<UserCardsTable> createState() => _UserCardsTableState();
@@ -29,35 +29,33 @@ class _UserCardsTableState extends State<UserCardsTable> {
   int page = 1;
   final int perPage = 5;
 
-  late List<UserCardData> all;
-
-  List<UserCardData> _demo() => List.generate(15, (i) {
-    final id = i + 1;
-    return UserCardData(
-      id: id,
-      name: 'محمد سعيد رمضان',
-      fatherName: 'محمد',
-      grandFatherName: 'سعيد',
-      motherName: 'أمّ محمد',
-      nationalId: '003254654564',
-      birthDate: '11 - 5 - 2000',
-      imageUrl: 'https://i.pravatar.cc/150?img=${id % 10}',
-      // placeholder avatar
-      role: UserRole.values[id % UserRole.values.length],
-    );
-  });
+  late List<User> all;
 
   @override
   void initState() {
     super.initState();
-    all = widget.data ?? _demo();
+    all = widget.data ?? [];
+  }
+
+  @override
+  void didUpdateWidget(covariant UserCardsTable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.data != oldWidget.data) {
+      setState(() {
+        all = widget.data ?? [];
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final q = _search.text.trim();
+    final q = _search.text.trim().toLowerCase();
     final filtered = all
-        .where((u) => q.isEmpty || u.name.contains(q) || u.nationalId.contains(q) || '#${u.id}'.contains(q))
+        .where((u) =>
+            q.isEmpty ||
+            (u.firstName ?? '').toLowerCase().contains(q) ||
+            (u.nationalId ?? '').contains(q) ||
+            '#${u.userId ?? 0}'.contains(q))
         .toList();
 
     final pages = (filtered.length / perPage).ceil().clamp(1, 9999);
@@ -70,6 +68,7 @@ class _UserCardsTableState extends State<UserCardsTable> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 720),
         child: Container(
+          height: double.infinity,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
@@ -82,82 +81,93 @@ class _UserCardsTableState extends State<UserCardsTable> {
               ),
             ],
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                12.verticalSpace,
-                // Search + filter row
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              12.verticalSpace,
+              // Search + filter row
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _RoundedField(
+                        controller: _search,
+                        hint: 'Search...',
+                        icon: Icons.search,
+                        onChanged: (_) => setState(() {}),
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    _RoundIconButton(icon: Icons.tune, onTap: () {}),
+                  ],
+                ),
+              ),
+              8.verticalSpace,
+              // Add button
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 44.h,
+                  child: ElevatedButton.icon(
+                    onPressed: widget.onAddUser,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    label: Text(
+                      'إضافة مستخدم',
+                      style: TextStyles.font14WhiteBold,
+                    ),
+                  ),
+                ),
+              ),
+              12.verticalSpace,
+              // User cards - Scrollable Area
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: _RoundedField(
-                          controller: _search,
-                          hint: 'Search...',
-                          icon: Icons.search,
-                          onChanged: (_) => setState(() {}),
+                      ...items.map(
+                        (u) => Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 6.h),
+                          child: InkWell(
+                            onTap: widget.onCardTap == null
+                                ? null
+                                : () => widget.onCardTap!(u),
+                            borderRadius: BorderRadius.circular(16),
+                            child: UserCard(user: u),
+                          ),
                         ),
                       ),
-                      10.horizontalSpace,
-                      _RoundIconButton(icon: Icons.tune, onTap: () {}),
                     ],
                   ),
                 ),
-                8.verticalSpace,
-                // Add button
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 44.h,
-                    child: ElevatedButton.icon(
-                      onPressed: widget.onAddUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                      ),
-                      icon: const Icon(Icons.add, color: Colors.white),
-                      label: Text(
-                        'إضافة مستخدم',
-                        style: TextStyles.font14WhiteBold,
-                      ),
-                    ),
-                  ),
-                ),
-                12.verticalSpace,
-                // User cards
-                ...items.map(
-                      (u) => Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                    child: InkWell(
-                      onTap: widget.onCardTap == null ? null : () => widget.onCardTap!(u),
-                      borderRadius: BorderRadius.circular(16),
-                      child: UserCard(user: u),
-                    ),
-                  ),
-                ),
-                12.verticalSpace,
-                // Pagination footer
-                _FooterPager(
-                  page: page,
-                  pages: pages,
-                  onPrev: page > 1 ? () => setState(() => page--) : null,
-                  onNext: page < pages ? () => setState(() => page++) : null,
-                ),
-              ],
-            ),
+              ),
+              12.verticalSpace,
+              // Pagination footer
+              _FooterPager(
+                page: page,
+                pages: pages,
+                onPrev: page > 1 ? () => setState(() => page--) : null,
+                onNext: page < pages ? () => setState(() => page++) : null,
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
 class _FooterPager extends StatelessWidget {
-  const _FooterPager({required this.page, required this.pages, this.onPrev, this.onNext});
+  const _FooterPager(
+      {required this.page, required this.pages, this.onPrev, this.onNext});
 
   final int page;
   final int pages;
@@ -173,7 +183,10 @@ class _FooterPager extends StatelessWidget {
           _CircleSoftButton(icon: Icons.chevron_left, onTap: onPrev),
           const Spacer(),
           Text('Page $page of $pages',
-              style: const TextStyle(color: Color(0xFF475569), fontSize: 14, fontWeight: FontWeight.w600)),
+              style: const TextStyle(
+                  color: Color(0xFF475569),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600)),
           const Spacer(),
           _CircleSoftButton(icon: Icons.chevron_right, onTap: onNext),
         ],
@@ -183,7 +196,11 @@ class _FooterPager extends StatelessWidget {
 }
 
 class _RoundedField extends StatelessWidget {
-  const _RoundedField({required this.controller, required this.hint, this.icon, this.onChanged});
+  const _RoundedField(
+      {required this.controller,
+      required this.hint,
+      this.icon,
+      this.onChanged});
 
   final TextEditingController controller;
   final String hint;
@@ -230,12 +247,16 @@ class _CircleSoftButton extends StatelessWidget {
         child: SizedBox(
           width: 40.w,
           height: 40.h,
-          child: Icon(icon, color: onTap == null ? const Color(0xFFCBD5E1) : const Color(0xFF111827)),
+          child: Icon(icon,
+              color: onTap == null
+                  ? const Color(0xFFCBD5E1)
+                  : const Color(0xFF111827)),
         ),
       ),
     );
   }
 }
+
 class _RoundIconButton extends StatelessWidget {
   const _RoundIconButton({required this.icon, this.onTap});
 
@@ -245,7 +266,6 @@ class _RoundIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-
       onTap: onTap,
       child: Container(
           padding: EdgeInsets.all(5.w),
@@ -253,11 +273,9 @@ class _RoundIconButton extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(24.r),
             border: Border.all(
-              color:  ColorsManager.grey30,
+              color: ColorsManager.grey30,
             ),
           ),
-
-
           child: SvgPicture.asset(filterSvg)),
     );
   }

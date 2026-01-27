@@ -10,10 +10,12 @@ import '../../../../core/widgets/labled_image_slot.dart';
 import '../cubit/create_user_cubit.dart';
 
 class CreateUserScreen extends StatelessWidget {
-  const CreateUserScreen({super.key});
+  CreateUserScreen({super.key});
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> _showImageSourceSheet(
-      BuildContext context, bool isProfile) async {
+      BuildContext context, String imageType) async {
     final cubit = context.read<CreateUserCubit>();
     final l10n = AppLocalizations.of(context)!;
 
@@ -38,7 +40,7 @@ class CreateUserScreen extends StatelessWidget {
       ),
     );
     if (source != null) {
-      cubit.pickImage(isProfile: isProfile, source: source);
+      cubit.pickImage(imageType: imageType, source: source);
     }
   }
 
@@ -60,7 +62,6 @@ class CreateUserScreen extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('User created successfully')),
               );
-              Navigator.pop(context);
             } else if (state.error != null) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.error!)),
@@ -68,134 +69,239 @@ class CreateUserScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  LabeledTextField(
-                    label: l10n.translate('employeeName'),
-                    hint: l10n.translate('nameHint'),
-                    onChanged: cubit.updateFullName,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('fatherName'),
-                    hint: l10n.translate('nameHint'),
-                    onChanged: cubit.updateFatherName,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('motherName'),
-                    hint: l10n.translate('nameHint'),
-                    onChanged: cubit.updateMotherName,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('birthDate'),
-                    hint: l10n.translate('birthDateHint'),
-                    onChanged: cubit.updateBirthDate,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('address'),
-                    hint: '', // Add hint if needed
-                    onChanged: cubit.updateAddress,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('nationalId'),
-                    hint: l10n.translate('nationalIdHint'),
-                    keyboardType: TextInputType.number,
-                    onChanged: cubit.updateNationalId,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('country'),
-                    hint: '',
-                    onChanged: cubit.updateCountry,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('province'),
-                    hint: '',
-                    onChanged: cubit.updateProvince,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('phone1'),
-                    hint: l10n.translate('nationalIdHint'),
-                    keyboardType: TextInputType.phone,
-                    onChanged: cubit.updatePhone1,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('phone2'),
-                    hint: l10n.translate('nationalIdHint'),
-                    keyboardType: TextInputType.phone,
-                    onChanged: cubit.updatePhone2,
-                  ),
-                  gap(),
-                  LabeledTextField(
-                    label: l10n.translate('email'),
-                    hint: l10n.translate('emailHint'),
-                    keyboardType: TextInputType.emailAddress,
-                    onChanged: cubit.updateEmail,
-                  ),
-                  gap(),
-                  LabeledFakeDropdown(
-                    label: l10n.translate('role'),
-                    value: state.role.isEmpty ? '...' : state.role,
-                    // TODO: add picker for role if needed
-                  ),
-                  gap(16),
-                  LabeledImageSlot(
-                    label: l10n.translate('profileImage'),
-                    file: state.profileImage,
-                    onTap: () => _showImageSourceSheet(context, true),
-                  ),
-                  gap(16),
-                  LabeledImageSlot(
-                    label: l10n.translate('idImage'),
-                    file: state.idImage,
-                    onTap: () => _showImageSourceSheet(context, false),
-                  ),
-                  gap(24),
-                  Center(
-                    child: SizedBox(
-                      width: 180,
-                      height: 44,
-                      child: ElevatedButton.icon(
-                        onPressed: state.isLoading ? null : cubit.createUser,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+            return Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LabeledTextField(
+                      label: 'First Name',
+                      hint: 'Enter first name',
+                      controller: cubit.firstNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'First Name is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Last Name',
+                      hint: 'Enter last name',
+                      controller: cubit.lastNameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Last Name is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('email'),
+                      hint: l10n.translate('emailHint'),
+                      keyboardType: TextInputType.emailAddress,
+                      controller: cubit.emailController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        }
+                        final emailRegex =
+                            RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Password',
+                      hint: 'Enter password',
+                      obscureText: true,
+                      controller: cubit.passwordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Confirm Password',
+                      hint: 'Confirm password',
+                      obscureText: true,
+                      controller: cubit.confirmPasswordController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Confirm Password is required';
+                        }
+                        if (value != cubit.passwordController.text) {
+                          return 'Passwords do not match';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledFakeDropdown(
+                      label: l10n.translate('role'),
+                      value: cubit.roleController.text.isEmpty
+                          ? '...'
+                          : cubit.roleController.text,
+                      // TODO: add picker for role if needed
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Main Phone',
+                      hint: 'Enter main phone',
+                      keyboardType: TextInputType.phone,
+                      controller: cubit.mainPhoneController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Main Phone is required';
+                        }
+                        return null;
+                      },
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('fatherName'),
+                      hint: l10n.translate('nameHint'),
+                      controller: cubit.fatherNameController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('motherName'),
+                      hint: l10n.translate('nameHint'),
+                      controller: cubit.motherNameController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Gender',
+                      hint: 'Enter gender',
+                      controller: cubit.genderController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('birthDate'),
+                      hint: l10n.translate('birthDateHint'),
+                      controller: cubit.birthDateController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('address'),
+                      hint: '',
+                      controller: cubit.addressController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('nationalId'),
+                      hint: l10n.translate('nationalIdHint'),
+                      keyboardType: TextInputType.number,
+                      controller: cubit.nationalIdController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: l10n.translate('country'),
+                      hint: '',
+                      controller: cubit.countryController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Governorate',
+                      hint: 'Enter governorate',
+                      controller: cubit.governorateController,
+                    ),
+                    gap(),
+                    LabeledTextField(
+                      label: 'Secondary Phone',
+                      hint: 'Enter secondary phone',
+                      keyboardType: TextInputType.phone,
+                      controller: cubit.secondaryPhoneController,
+                    ),
+                    gap(16),
+                    LabeledImageSlot(
+                      label: l10n.translate('profileImage'),
+                      file: state.profileImage,
+                      onTap: () => _showImageSourceSheet(context, 'profile'),
+                    ),
+                    gap(16),
+                    LabeledImageSlot(
+                      label: l10n.translate('idImage'),
+                      file: state.idImage,
+                      onTap: () => _showImageSourceSheet(context, 'id'),
+                    ),
+                    gap(16),
+                    LabeledImageSlot(
+                      label: 'Passport Picture',
+                      file: state.passportImage,
+                      onTap: () => _showImageSourceSheet(context, 'passport'),
+                    ),
+                    gap(24),
+                    Center(
+                      child: SizedBox(
+                        width: 180,
+                        height: 44,
+                        child: ElevatedButton.icon(
+                          onPressed: state.isLoading
+                              ? null
+                              : () {
+                                  if (_formKey.currentState!.validate()) {
+                                    if (state.profileImage == null) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Profile image is required')),
+                                      );
+                                      return;
+                                    }
+                                    cubit.createUser();
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Please fill all required fields')),
+                                    );
+                                  }
+                                },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 0,
                           ),
-                          elevation: 0,
-                        ),
-                        icon: state.isLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Icon(Icons.person_add_alt_1, size: 18),
-                        label: Text(
-                          l10n.translate('createUserBtn'),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
+                          icon: state.isLoading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Icon(Icons.person_add_alt_1, size: 18),
+                          label: Text(
+                            l10n.translate('createUserBtn'),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

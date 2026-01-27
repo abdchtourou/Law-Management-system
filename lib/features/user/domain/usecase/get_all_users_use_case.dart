@@ -11,6 +11,7 @@ class GetAllUsersUseCase extends UseCase<Stream<List<User>>, NoParams> {
 
   @override
   Future<Either<Failure, Stream<List<User>>>> call(NoParams params) async {
+    print('jdshalkfhjs');
     return Right(userRepo.getUserStream());
   }
 }

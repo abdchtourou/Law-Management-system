@@ -99,6 +99,7 @@ class User extends Equatable {
       ];
 
   User.fromJson(Map<String, dynamic> json) {
+    print('hsalkdjh ${json}');
     userId = json['user_id'];
     userAuthId = json['user_auth_id'];
     role = json['role'];

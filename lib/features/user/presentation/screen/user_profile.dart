@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../auth/data/models/user_model.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/id_image_placeholder.dart';
 import '../widgets/info_row.dart';
-import '../widgets/log_row.dart';
 import '../widgets/role_chip.dart';
 import '../widgets/section_title.dart';
 
@@ -14,15 +14,25 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the user object from route arguments
+    final user = ModalRoute.of(context)?.settings.arguments as User?;
+
+    if (user == null) {
+      return Scaffold(
+        appBar: const CustomAppBar(title: 'تفاصيل المستخدم'),
+        body: const Center(
+          child: Text('لا توجد بيانات مستخدم'),
+        ),
+      );
+    }
+
     const bg = Color(0xFFF5F6F7);
 
     return Scaffold(
       backgroundColor: bg,
       appBar: const CustomAppBar(
         title: 'تفاصيل المستخدم',
-
-      )
-      ,
+      ),
       body: SafeArea(
         child: Directionality(
           textDirection: TextDirection.rtl,
@@ -33,116 +43,161 @@ class UserProfileScreen extends StatelessWidget {
                 CustomCard(
                   child: Row(
                     children: [
-                      // Avatar
+                      // User Info
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const _KV('الاسم', 'محمد سعيد رمضان', bold: true),
+                            _KV('الاسم', user.fullName ?? 'غير متوفر',
+                                bold: true),
                             SizedBox(height: 6.h),
-                            const _KV('اسم الأب', 'محمد سعيد رمضان'),
-                            const _KV('اسم الأم', 'محمد سعيد رمضان'),
-                            const _KV('التولد', '2000 - 5 - 11'),
-                            const _KV('الرقم الوطني', '0032546545646'),
+                            _KV('الاسم الأول', user.firstName ?? 'غير متوفر'),
+                            _KV('الاسم الأخير', user.lastName ?? 'غير متوفر'),
+                            _KV('اسم الأب', user.fatherName ?? 'غير متوفر'),
+                            _KV('اسم الأم', user.motherName ?? 'غير متوفر'),
+                            _KV('التولد', user.birthDate ?? 'غير متوفر'),
+                            _KV('العمر', user.age?.toString() ?? 'غير متوفر'),
+                            _KV('الجنس', user.gender ?? 'غير متوفر'),
+                            _KV('الرقم الوطني', user.nationalId ?? 'غير متوفر'),
                             SizedBox(height: 16.h),
-                            const RoleChip(label: 'مدير'),
+                            RoleChip(label: user.roleName ?? 'مستخدم'),
                           ],
                         ),
                       ),
                       SizedBox(width: 12.w),
-                      // Name + labels
+                      // Profile Image
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          'https://i.pravatar.cc/160?img=5',
-                          width: 120.w,
-                          height: 187.h,
-                          fit: BoxFit.cover,
-                        ),
+                        child: user.profilePicture != null &&
+                                user.profilePicture!.isNotEmpty
+                            ? Image.network(
+                                user.profilePicture!,
+                                width: 120.w,
+                                height: 187.h,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return _DefaultAvatar(
+                                      width: 120.w, height: 187.h);
+                                },
+                              )
+                            : _DefaultAvatar(width: 120.w, height: 187.h),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 16.h),
 
-                // Address & contacts
-                const CustomCard(
+                // Address & location
+                CustomCard(
                   child: Column(
                     children: [
                       InfoRow(
                         icon: Icons.location_on_outlined,
                         label: 'العنوان',
-                        value: 'دمشق - المزة - بناء 5 رقم 5',
+                        value: user.address ?? 'غير متوفر',
                       ),
-                      _Divider(),
+                      const _Divider(),
                       InfoRow(
                         icon: Icons.public_outlined,
                         label: 'الدولة',
-                        value: 'سوريا',
+                        value: user.country ?? 'غير متوفر',
                       ),
-                      _Divider(),
+                      const _Divider(),
                       InfoRow(
                         icon: Icons.map_outlined,
                         label: 'المحافظة',
-                        value: 'دمشق',
+                        value: user.governorate ?? 'غير متوفر',
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 16.h),
-                const CustomCard(
+
+                // Contact info
+                CustomCard(
                   child: Column(
                     children: [
                       InfoRow(
                         icon: Icons.email_outlined,
                         label: 'البريد الالكتروني',
-                        value: 'user@gmail.com',
+                        value: user.email ?? 'غير متوفر',
                       ),
-                      _Divider(),
+                      const _Divider(),
                       InfoRow(
                         icon: Icons.phone_outlined,
                         label: 'رقم 1',
-                        value: '099 454 5566',
+                        value: user.mainPhone ?? 'غير متوفر',
                       ),
-                      _Divider(),
-                      InfoRow(
-                        icon: Icons.phone_outlined,
-                        label: 'رقم 2',
-                        value: '095 546 6446',
-                      ),
+                      if (user.secondaryPhone != null &&
+                          user.secondaryPhone!.isNotEmpty) ...[
+                        const _Divider(),
+                        InfoRow(
+                          icon: Icons.phone_outlined,
+                          label: 'رقم 2',
+                          value: user.secondaryPhone!,
+                        ),
+                      ],
                     ],
                   ),
                 ),
                 SizedBox(height: 16.h),
 
                 // Login records
-                const CustomCard(
+                CustomCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SectionTitle('تسجيل الدخول', icon: Icons.search_rounded),
-                      SizedBox(height: 6),
-                      LogRow(date: '11-8-2020', time: '10:30 صباحاً'),
-                      _Divider(),
-                      LogRow(date: '11-8-2020', time: '10:30 صباحاً'),
-                      _Divider(),
-                      LogRow(date: '11-8-2020', time: '10:30 صباحاً'),
+                      const SectionTitle('معلومات الحساب',
+                          icon: Icons.info_outline),
+                      const SizedBox(height: 12),
+                      _KV('رقم المستخدم', '#${user.userId ?? "N/A"}'),
+                      _KV('رقم المصادقة', '#${user.userAuthId ?? "N/A"}'),
+                      _KV('الحالة', user.isActive == true ? 'نشط' : 'غير نشط'),
+                      _KV('آخر تسجيل دخول', user.lastLogin ?? 'غير متوفر'),
+                      _KV('تاريخ الإنشاء', user.createdAt ?? 'غير متوفر'),
+                      _KV('آخر تحديث', user.updatedAt ?? 'غير متوفر'),
+                      if (user.createdByName != null)
+                        _KV('أنشئ بواسطة', user.createdByName!),
                     ],
                   ),
                 ),
                 SizedBox(height: 16.h),
 
                 // ID image
-                const CustomCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SectionTitle('صورة الهوية', icon: Icons.insert_photo_outlined),
-                      SizedBox(height: 8),
-                      IdImagePlaceholder(),
-                    ],
+                if (user.idPicture != null && user.idPicture!.isNotEmpty)
+                  CustomCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SectionTitle('صورة الهوية',
+                            icon: Icons.insert_photo_outlined),
+                        const SizedBox(height: 8),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            user.idPicture!,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const IdImagePlaceholder();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  const CustomCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SectionTitle('صورة الهوية',
+                            icon: Icons.insert_photo_outlined),
+                        SizedBox(height: 8),
+                        IdImagePlaceholder(),
+                      ],
+                    ),
                   ),
-                ),
 
                 const SizedBox(height: 16),
 
@@ -153,13 +208,17 @@ class UserProfileScreen extends StatelessWidget {
                       child: SizedBox(
                         height: 46,
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            // TODO: Implement update user
+                          },
                           icon: const Icon(Icons.autorenew_rounded, size: 18),
-                          label: const Text('تحديث البيانات', style: TextStyle(fontWeight: FontWeight.w600)),
+                          label: const Text('تحديث البيانات',
+                              style: TextStyle(fontWeight: FontWeight.w600)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                             elevation: 0,
                           ),
                         ),
@@ -170,13 +229,17 @@ class UserProfileScreen extends StatelessWidget {
                       child: SizedBox(
                         height: 46,
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            // TODO: Implement delete user
+                          },
                           icon: const Icon(Icons.delete_outline, size: 20),
-                          label: const Text('حذف المستخدم', style: TextStyle(fontWeight: FontWeight.w600)),
+                          label: const Text('حذف المستخدم',
+                              style: TextStyle(fontWeight: FontWeight.w600)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFE74C3C),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                             elevation: 0,
                           ),
                         ),
@@ -192,6 +255,31 @@ class UserProfileScreen extends StatelessWidget {
     );
   }
 }
+
+class _DefaultAvatar extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const _DefaultAvatar({required this.width, required this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Icon(
+        Icons.person,
+        size: 60,
+        color: Colors.grey,
+      ),
+    );
+  }
+}
+
 class _KV extends StatelessWidget {
   final String k;
   final String v;
@@ -219,6 +307,7 @@ class _KV extends StatelessWidget {
     );
   }
 }
+
 class _Divider extends StatelessWidget {
   const _Divider();
 
@@ -231,8 +320,3 @@ class _Divider extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

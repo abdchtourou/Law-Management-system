@@ -120,6 +120,7 @@ class AppSideDrawer extends StatelessWidget {
                         .translate('userManagement'),
                     icon: groupSvg,
                     onTap: () {
+                      print('jhsadlkhjs');
                       context.pushNamed(Routes.userManagement);
                     },
                   ),

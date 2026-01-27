@@ -15,7 +15,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource{
     try{
 
       final  response= await apiClient.get('/api/mobile/home/',);
-
+      print('HomeRemoteDataSourceImpl.getHome ${response}');
       return HomeModel.fromJson(response);
     } on ServerException {
       rethrow;

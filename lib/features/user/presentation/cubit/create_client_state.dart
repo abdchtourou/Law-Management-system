@@ -1,40 +1,42 @@
-part of 'create_user_cubit.dart';
+part of 'create_client_cubit.dart';
 
 @immutable
-abstract class CreateUserState {}
-
-class CreateUserInitial extends CreateUserState {
+class CreateClientState {
   final File? profileImage;
   final File? idImage;
   final File? passportImage;
   final bool isLoading;
-  final String? error;
   final bool isSuccess;
+  final String? error;
 
-  CreateUserInitial({
+  const CreateClientState({
     this.profileImage,
     this.idImage,
     this.passportImage,
     this.isLoading = false,
-    this.error,
     this.isSuccess = false,
+    this.error,
   });
 
-  CreateUserInitial copyWith({
+  CreateClientState copyWith({
     File? profileImage,
     File? idImage,
     File? passportImage,
     bool? isLoading,
-    String? error,
     bool? isSuccess,
+    String? error,
   }) {
-    return CreateUserInitial(
+    return CreateClientState(
       profileImage: profileImage ?? this.profileImage,
       idImage: idImage ?? this.idImage,
       passportImage: passportImage ?? this.passportImage,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
       isSuccess: isSuccess ?? this.isSuccess,
+      error: error,
     );
   }
+}
+
+class CreateClientInitial extends CreateClientState {
+  const CreateClientInitial();
 }

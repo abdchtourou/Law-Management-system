@@ -37,18 +37,13 @@ class HomeScreen extends StatelessWidget {
               } else if (state is HomeSuccess) {
                 // 1. USE CURRENT DATA (The stable data)
                 final data = state.currentData;
-                print('halskdfhkj h${state.currentUsers}');
 
                 return Stack(
                   children: [
-                    // --- The Main Content ---
                     SingleChildScrollView(
-                      // Add top padding so the first card isn't hidden behind the button
                       padding: EdgeInsets.only(top: state.hasUpdate ? 60.h : 0),
                       child: Column(
                         children: [
-                          // Removed LinearProgressIndicator to avoid confusion
-
                           Row(
                             children: [
                               Expanded(
@@ -62,9 +57,9 @@ class HomeScreen extends StatelessWidget {
                               Expanded(
                                 child: CasesSummaryCard(
                                   total: data.legalCasesStats!.total!,
-                                  openCount: 948,
+                                  openCount: data.legalCasesStats!.open ??0,
                                   closedCount: 948,
-                                  inProgressCount: 948,
+                                  inProgressCount: data.legalCasesStats!.resolved ??0,
                                 ),
                               ),
                             ],

@@ -54,14 +54,21 @@ class HomeIsarModel {
 class LegalCasesStatsEmbedded {
   int? total;
   double? completionRate;
+  int? open;
+  int? resolved;
+
 
   LegalCasesStats toEntity() =>
-      LegalCasesStats(total: total, completionRate: completionRate);
+      LegalCasesStats(total: total, completionRate: completionRate, open: open,resolved: resolved);
 
   static LegalCasesStatsEmbedded fromEntity(LegalCasesStats entity) =>
       LegalCasesStatsEmbedded()
         ..total = entity.total
-        ..completionRate = entity.completionRate;
+        ..completionRate = entity.completionRate
+      ..open=entity.open
+  ..resolved=entity.resolved;
+
+
 }
 
 @embedded

@@ -6,6 +6,9 @@ import '../../../../core/routing/routes.dart';
 import '../../../../core/theming/colorsManager.dart';
 import '../../../../core/theming/styles.dart';
 import '../widgets/userManagementWidgets/user_card_table.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubit/user_management_cubit.dart';
+import 'package:lms/features/auth/data/models/user_model.dart';
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -36,12 +39,43 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(12.w),
-          child: UserCardsTable(
-            onAddUser: () {
-              context.pushNamed(Routes.createUser);
-            },
-            onCardTap: (user) {
-              context.pushNamed(Routes.userProfile, arguments: user);
+          child: BlocBuilder<UserManagementCubit, UserManagementState>(
+            builder: (context, state) {
+              if (state is UserManagementLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is UserManagementError) {
+                return Center(child: Text(state.message));
+              } else if (state is UserManagementLoaded) {
+                print('hjkasdfjh ${state.users.first.firstName}');
+                return Column(
+                  children: [
+                    if (state.isRefreshing)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: const Center(
+                          child: SizedBox(
+                            height: 3,
+                            child: LinearProgressIndicator(),
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: UserCardsTable(
+                        data: state.users,
+                        onAddUser: () {
+                          context.pushNamed(Routes.createUser);
+                        },
+                        onCardTap: (user) {
+                          context.pushNamed(Routes.userProfile,
+                              arguments: user);
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
             },
           ),
         ),
@@ -49,33 +83,3 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     );
   }
 }
-
-enum UserRole { admin, manager, employee, agent, client }
-
-class UserCardData {
-  final int id;
-  final String name;
-  final String fatherName;
-  final String grandFatherName;
-  final String motherName;
-  final String nationalId;
-  final String birthDate;
-  final String imageUrl;
-  final UserRole role;
-
-  UserCardData({
-    required this.id,
-    required this.name,
-    required this.fatherName,
-    required this.grandFatherName,
-    required this.motherName,
-    required this.nationalId,
-    required this.birthDate,
-    required this.imageUrl,
-    required this.role,
-  });
-}
-
-
-
-

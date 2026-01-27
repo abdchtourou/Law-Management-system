@@ -22,8 +22,6 @@ class UserRepoImpl implements UserRepo {
     await for (final list in localDataSource.getUserStream()) {
       if (list.isEmpty && !hasCheckedEmpty) {
         hasCheckedEmpty = true;
-        // Wait for sync to complete (triggered by Cubit) before continuing
-        // Don't yield anything here - wait for the next emission after sync
         continue;
       }
 
@@ -51,6 +49,17 @@ class UserRepoImpl implements UserRepo {
       Map<String, dynamic> userData) async {
     try {
       await remoteDataSource.createUser(userData);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> createClient(
+      Map<String, dynamic> clientData) async {
+    try {
+      await remoteDataSource.createClient(clientData);
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString()));

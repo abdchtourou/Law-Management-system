@@ -1131,8 +1131,18 @@ const LegalCasesStatsEmbeddedSchema = Schema(
       name: r'completionRate',
       type: IsarType.double,
     ),
-    r'total': PropertySchema(
+    r'open': PropertySchema(
       id: 1,
+      name: r'open',
+      type: IsarType.long,
+    ),
+    r'resolved': PropertySchema(
+      id: 2,
+      name: r'resolved',
+      type: IsarType.long,
+    ),
+    r'total': PropertySchema(
+      id: 3,
       name: r'total',
       type: IsarType.long,
     )
@@ -1159,7 +1169,9 @@ void _legalCasesStatsEmbeddedSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeDouble(offsets[0], object.completionRate);
-  writer.writeLong(offsets[1], object.total);
+  writer.writeLong(offsets[1], object.open);
+  writer.writeLong(offsets[2], object.resolved);
+  writer.writeLong(offsets[3], object.total);
 }
 
 LegalCasesStatsEmbedded _legalCasesStatsEmbeddedDeserialize(
@@ -1170,7 +1182,9 @@ LegalCasesStatsEmbedded _legalCasesStatsEmbeddedDeserialize(
 ) {
   final object = LegalCasesStatsEmbedded();
   object.completionRate = reader.readDoubleOrNull(offsets[0]);
-  object.total = reader.readLongOrNull(offsets[1]);
+  object.open = reader.readLongOrNull(offsets[1]);
+  object.resolved = reader.readLongOrNull(offsets[2]);
+  object.total = reader.readLongOrNull(offsets[3]);
   return object;
 }
 
@@ -1184,6 +1198,10 @@ P _legalCasesStatsEmbeddedDeserializeProp<P>(
     case 0:
       return (reader.readDoubleOrNull(offset)) as P;
     case 1:
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1272,6 +1290,154 @@ extension LegalCasesStatsEmbeddedQueryFilter on QueryBuilder<
         upper: upper,
         includeUpper: includeUpper,
         epsilon: epsilon,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'open',
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'open',
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'open',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'open',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'open',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> openBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'open',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'resolved',
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'resolved',
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'resolved',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'resolved',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'resolved',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<LegalCasesStatsEmbedded, LegalCasesStatsEmbedded,
+      QAfterFilterCondition> resolvedBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'resolved',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }

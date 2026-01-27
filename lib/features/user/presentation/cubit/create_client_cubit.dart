@@ -3,35 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
-import '../../domain/usecase/create_user_use_case.dart';
+import '../../domain/usecase/create_client_use_case.dart';
 
-part 'create_user_state.dart';
+part 'create_client_state.dart';
 
-class CreateUserCubit extends Cubit<CreateUserInitial> {
-  final CreateUserUseCase createUserUseCase;
+class CreateClientCubit extends Cubit<CreateClientState> {
+  final CreateClientUseCase createClientUseCase;
   final ImagePicker _picker = ImagePicker();
 
+  // Text Controllers for all 11 fields
+  final TextEditingController clientTypeController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-  final TextEditingController roleController = TextEditingController();
-  final TextEditingController mainPhoneController = TextEditingController();
   final TextEditingController fatherNameController = TextEditingController();
   final TextEditingController motherNameController = TextEditingController();
-  final TextEditingController genderController = TextEditingController();
-  final TextEditingController birthDateController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
   final TextEditingController nationalIdController = TextEditingController();
-  final TextEditingController countryController = TextEditingController();
-  final TextEditingController governorateController = TextEditingController();
-  final TextEditingController secondaryPhoneController =
-      TextEditingController();
+  final TextEditingController birthDateController = TextEditingController();
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController notesController = TextEditingController();
 
-  CreateUserCubit({required this.createUserUseCase})
-      : super(CreateUserInitial());
+  CreateClientCubit({required this.createClientUseCase})
+      : super(const CreateClientInitial());
 
   Future<void> pickImage({
     required String imageType,
@@ -67,26 +61,21 @@ class CreateUserCubit extends Cubit<CreateUserInitial> {
     }
   }
 
-  Future<void> createUser() async {
+  Future<void> createClient() async {
     emit(state.copyWith(isLoading: true, error: null, isSuccess: false));
 
-    final result = await createUserUseCase({
+    final result = await createClientUseCase({
+      'client_type': clientTypeController.text,
       'first_name': firstNameController.text,
-      'last_name': lastNameController.text,
-      'email': emailController.text,
-      'password': passwordController.text,
-      'confirm_password': confirmPasswordController.text,
-      'role': '9',
-      'main_phone': mainPhoneController.text,
       'father_name': fatherNameController.text,
       'mother_name': motherNameController.text,
-      'gender': genderController.text,
-      'birth_date': birthDateController.text,
-      'address': addressController.text,
+      'last_name': lastNameController.text,
       'national_id': nationalIdController.text,
-      'country': countryController.text,
-      'governorate': governorateController.text,
-      'secondary_phone': secondaryPhoneController.text,
+      'birth_date': birthDateController.text,
+      'phone_number': phoneNumberController.text,
+      'address': addressController.text,
+      'email': emailController.text,
+      'notes': notesController.text,
       'profile_picture': state.profileImage,
       'id_picture': state.idImage,
       'passport_picture': state.passportImage,
@@ -101,22 +90,17 @@ class CreateUserCubit extends Cubit<CreateUserInitial> {
 
   @override
   Future<void> close() {
+    clientTypeController.dispose();
     firstNameController.dispose();
-    lastNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    roleController.dispose();
-    mainPhoneController.dispose();
     fatherNameController.dispose();
     motherNameController.dispose();
-    genderController.dispose();
-    birthDateController.dispose();
-    addressController.dispose();
+    lastNameController.dispose();
     nationalIdController.dispose();
-    countryController.dispose();
-    governorateController.dispose();
-    secondaryPhoneController.dispose();
+    birthDateController.dispose();
+    phoneNumberController.dispose();
+    addressController.dispose();
+    emailController.dispose();
+    notesController.dispose();
     return super.close();
   }
 }

@@ -11,6 +11,7 @@ class LabeledTextField extends StatelessWidget {
   final int maxLines;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
+  final String? Function(String?)? validator;
 
   const LabeledTextField({
     super.key,
@@ -21,6 +22,7 @@ class LabeledTextField extends StatelessWidget {
     this.maxLines = 1,
     this.obscureText = false,
     this.onChanged,
+    this.validator,
   });
 
   InputDecoration _deco() {
@@ -36,6 +38,14 @@ class LabeledTextField extends StatelessWidget {
         borderRadius: BorderRadius.circular(6.r),
         borderSide: const BorderSide(color: Colors.black, width: 1.2),
       ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(6),
+        borderSide: const BorderSide(color: Colors.red, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(6),
+        borderSide: const BorderSide(color: Colors.red, width: 1.2),
+      ),
       filled: true,
       fillColor: Colors.white,
     );
@@ -48,12 +58,13 @@ class LabeledTextField extends StatelessWidget {
       children: [
         Text(label, style: TextStyles.font14BlackBold),
         SizedBox(height: 6.h),
-        TextField(
+        TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           maxLines: maxLines,
           obscureText: obscureText,
           onChanged: onChanged,
+          validator: validator,
           decoration: _deco(),
         ),
       ],

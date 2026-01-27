@@ -143,6 +143,31 @@ class ApiClient {
     }
   }
 
+  /// POST request with multipart/form-data for file uploads
+  Future<dynamic> postMultipart(
+    String endpoint,
+    FormData formData, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await dio.post(
+        endpoint,
+        data: formData,
+        queryParameters: queryParameters,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+      return _processResponse(response);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw NetworkException('Unexpected error: $e');
+    }
+  }
+
   /// Process HTTP response
   dynamic _processResponse(Response response) {
     switch (response.statusCode) {

@@ -71,23 +71,34 @@ class HomeModel extends Equatable {
 class LegalCasesStats extends Equatable {
   int? total;
   double? completionRate;
+  int? open;
+  int? resolved;
 
-  LegalCasesStats({this.total, this.completionRate});
+  LegalCasesStats({this.total, this.completionRate,this.open,required this.resolved});
 
   LegalCasesStats.fromJson(Map<String, dynamic> json) {
     total = json['total'] ?? 0;
     completionRate = json['completion_rate'] ?? 0.0;
+    open = json['details'] != null && json['details']['Open'] != null
+        ? json['details']['Open'] as int
+        : 0;
+    resolved = json['details'] != null && json['details']['Resolved'] != null
+        ? json['details']['Resolved'] as int
+        : 0;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['total'] = total;
     data['completion_rate'] = completionRate;
+    if (open != null) {
+      data['details'] = {'Open': open};
+    }
     return data;
   }
 
   @override
-  List<Object?> get props => [total, completionRate];
+  List<Object?> get props => [total, completionRate, open];
 }
 
 class TasksStats extends Equatable {

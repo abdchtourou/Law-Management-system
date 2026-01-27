@@ -3,56 +3,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../core/theming/colorsManager.dart';
 import '../../../../../core/theming/styles.dart';
-import '../../screen/user_management_screen.dart';
+import '../../../../auth/data/models/user_model.dart';
 
 class UserCard extends StatelessWidget {
   const UserCard({super.key, required this.user});
 
-  final UserCardData user;
+  final User user;
 
   Color get _badgeColor {
-    switch (user.role) {
-      case UserRole.admin:
-        return const Color(0xFF3AA65A);
-      case UserRole.manager:
-        return const Color(0xFF1F4E6B);
-      case UserRole.employee:
-        return const Color(0xFF94A3B8);
-      case UserRole.agent:
-        return const Color(0xFF737373);
-      case UserRole.client:
-        return const Color(0xFF52525B);
-    }
+    final roleName = (user.roleName ?? '').toLowerCase();
+    if (roleName.contains('admin')) return const Color(0xFF3AA65A);
+    if (roleName.contains('manager')) return const Color(0xFF1F4E6B);
+    if (roleName.contains('employee')) return const Color(0xFF94A3B8);
+    if (roleName.contains('agent')) return const Color(0xFF737373);
+    return const Color(0xFF52525B); // client
   }
 
   String get _roleLabel {
-    switch (user.role) {
-      case UserRole.admin:
-        return 'مسؤول';
-      case UserRole.manager:
-        return 'مدير';
-      case UserRole.employee:
-        return 'موظف';
-      case UserRole.agent:
-        return 'وكيل';
-      case UserRole.client:
-        return 'عميل';
-    }
+    return user.roleName ?? 'عميل';
   }
 
   IconData get _roleIcon {
-    switch (user.role) {
-      case UserRole.admin:
-        return Icons.verified_user;
-      case UserRole.manager:
-        return Icons.security;
-      case UserRole.employee:
-        return Icons.badge;
-      case UserRole.agent:
-        return Icons.people;
-      case UserRole.client:
-        return Icons.people;
-    }
+    final roleName = (user.roleName ?? '').toLowerCase();
+    if (roleName.contains('admin')) return Icons.verified_user;
+    if (roleName.contains('manager')) return Icons.security;
+    if (roleName.contains('employee')) return Icons.badge;
+    if (roleName.contains('agent')) return Icons.people;
+    return Icons.people; // client
   }
 
   @override
@@ -79,10 +56,10 @@ class UserCard extends StatelessWidget {
               children: [
                 // top line: name + id
                 Row(
-
                   children: [
-                    Expanded(child: _kv1('الاسم :', user.name)),
-                    Text('#${user.id}', style: TextStyle(color: Colors.black, fontSize: 10.sp)),
+                    Expanded(child: _kv1('الاسم :', user.firstName ?? '')),
+                    Text('#${user.userId ?? 0}',
+                        style: TextStyle(color: Colors.black, fontSize: 10.sp)),
                     10.horizontalSpace,
                     _RoleBadge(
                       color: _badgeColor,
@@ -94,14 +71,16 @@ class UserCard extends StatelessWidget {
                 6.verticalSpace,
                 Row(
                   children: [
-                    Expanded(child: _kv('اسم الأب :', user.fatherName)),
-                    Expanded(child: _kv('تاريخ الميلاد :', user.birthDate)),
+                    Expanded(child: _kv('اسم الأب :', user.fatherName ?? '')),
+                    Expanded(
+                        child: _kv('تاريخ الميلاد :', user.birthDate ?? '')),
                   ],
                 ),
                 Row(
                   children: [
-                    Expanded(child: _kv('اسم الأم :', user.motherName)),
-                    Expanded(child: _kv('الرقم الوطني :', user.nationalId)),
+                    Expanded(child: _kv('اسم الأم :', user.motherName ?? '')),
+                    Expanded(
+                        child: _kv('الرقم الوطني :', user.nationalId ?? '')),
                   ],
                 ),
                 4.verticalSpace,
@@ -115,7 +94,8 @@ class UserCard extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.r),
               image: DecorationImage(
-                image: NetworkImage(user.imageUrl),
+                image: NetworkImage(user.profilePicture ??
+                    'https://i.pravatar.cc/150?img=${(user.userId ?? 0) % 10}'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -126,46 +106,48 @@ class UserCard extends StatelessWidget {
   }
 
   Widget _kv1(String k, String v) => Padding(
-    padding: EdgeInsets.only(bottom: 2.h),
-    child: Row(
-      children: [
-        Text(
-          k,
-          style: TextStyles.font12BlackExtraBold,
+        padding: EdgeInsets.only(bottom: 2.h),
+        child: Row(
+          children: [
+            Text(
+              k,
+              style: TextStyles.font12BlackExtraBold,
+            ),
+            4.horizontalSpace,
+            Flexible(
+              child: Text(
+                v,
+                style: TextStyles.font12BlackExtraBold,
+              ),
+            ),
+          ],
         ),
-        4.horizontalSpace,
-        Flexible(
-          child: Text(
-            v,
-            style: TextStyles.font12BlackExtraBold,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 
   Widget _kv(String k, String v) => Padding(
-    padding: EdgeInsets.only(bottom: 2.h),
-    child: Row(
-      children: [
-        Text(
-          k,
-          style: TextStyles.font10BlackMedium,
+        padding: EdgeInsets.only(bottom: 2.h),
+        child: Row(
+          children: [
+            Text(
+              k,
+              style: TextStyles.font10BlackMedium,
+            ),
+            4.horizontalSpace,
+            Flexible(
+              child: Text(
+                v,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyles.font10BlackMedium,
+              ),
+            ),
+          ],
         ),
-        4.horizontalSpace,
-        Flexible(
-          child: Text(
-            v,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyles.font10BlackMedium,
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }
+
 class _RoleBadge extends StatelessWidget {
-  const _RoleBadge({required this.color, required this.icon, required this.text});
+  const _RoleBadge(
+      {required this.color, required this.icon, required this.text});
 
   final Color color;
   final IconData icon;
@@ -187,7 +169,8 @@ class _RoleBadge extends StatelessWidget {
           4.horizontalSpace,
           Text(
             text,
-            style: TextStyle(color: color, fontSize: 12.sp, fontWeight: FontWeight.w700),
+            style: TextStyle(
+                color: color, fontSize: 12.sp, fontWeight: FontWeight.w700),
           ),
         ],
       ),
