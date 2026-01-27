@@ -31,6 +31,7 @@ import '../features/user/domain/usecase/get_all_users_use_case.dart';
 import '../features/user/domain/usecase/sync_users_use_case.dart';
 import '../features/user/domain/usecase/create_user_use_case.dart';
 import '../features/user/domain/usecase/create_client_use_case.dart';
+import '../features/user/domain/usecase/update_user_use_case.dart';
 import '../features/user/presentation/cubit/create_user_cubit.dart';
 import '../features/user/presentation/cubit/create_client_cubit.dart';
 import '../features/user/presentation/cubit/user_management_cubit.dart';
@@ -139,9 +140,15 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<CreateClientUseCase>(
     () => CreateClientUseCase(userRepo: sl<UserRepo>()),
   );
+  sl.registerLazySingleton<UpdateUserUseCase>(
+    () => UpdateUserUseCase(sl<UserRepo>()),
+  );
 
   sl.registerFactory<CreateUserCubit>(
-    () => CreateUserCubit(createUserUseCase: sl<CreateUserUseCase>()),
+    () => CreateUserCubit(
+      createUserUseCase: sl<CreateUserUseCase>(),
+      updateUserUseCase: sl<UpdateUserUseCase>(),
+    ),
   );
   sl.registerFactory<CreateClientCubit>(
     () => CreateClientCubit(createClientUseCase: sl<CreateClientUseCase>()),

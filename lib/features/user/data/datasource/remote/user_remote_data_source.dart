@@ -8,6 +8,7 @@ abstract class UserRemoteDataSource {
   Future<List<User>> getAllUsers();
   Future<void> createUser(Map<String, dynamic> userData);
   Future<void> createClient(Map<String, dynamic> clientData);
+  Future<void> updateUser(int id, Map<String, dynamic> userData);
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -172,6 +173,28 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       );
     } catch (e) {
       print('Error creating client: ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateUser(int id, Map<String, dynamic> userData) async {
+    try {
+      // Filter out file objects as they cannot be sent via query parameters
+      final queryParams = <String, dynamic>{};
+      userData.forEach((key, value) {
+        if (value is! File && value != null) {
+          queryParams[key] = value;
+        }
+      });
+
+      await apiClient.put(
+        '/users/api/users/$id/update/',
+        {}, // Empty body
+        queryParameters: queryParams,
+      );
+    } catch (e) {
+      print('Error updating user: ${e.toString()}');
       rethrow;
     }
   }

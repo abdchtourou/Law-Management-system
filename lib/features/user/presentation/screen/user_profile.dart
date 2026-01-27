@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/widgets/custom_app_bar.dart';
+import '../../../../core/routing/routes.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/id_image_placeholder.dart';
@@ -209,7 +210,11 @@ class UserProfileScreen extends StatelessWidget {
                         height: 46,
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // TODO: Implement update user
+                            // Navigate to CreateUserScreen with user argument for editing
+                            Navigator.of(context).pushNamed(
+                              Routes.createUser,
+                              arguments: user,
+                            );
                           },
                           icon: const Icon(Icons.autorenew_rounded, size: 18),
                           label: const Text('تحديث البيانات',

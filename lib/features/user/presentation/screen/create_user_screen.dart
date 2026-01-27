@@ -59,8 +59,11 @@ class CreateUserScreen extends StatelessWidget {
         child: BlocConsumer<CreateUserCubit, CreateUserInitial>(
           listener: (context, state) {
             if (state.isSuccess) {
+              final message = state.isEditing
+                  ? 'User updated successfully'
+                  : 'User created successfully';
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('User created successfully')),
+                SnackBar(content: Text(message)),
               );
             } else if (state.error != null) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -124,10 +127,17 @@ class CreateUserScreen extends StatelessWidget {
                       obscureText: true,
                       controller: cubit.passwordController,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (state.isEditing &&
+                            (value == null || value.isEmpty)) {
+                          return null;
+                        }
+                        if (!state.isEditing &&
+                            (value == null || value.isEmpty)) {
                           return 'Password is required';
                         }
-                        if (value.length < 6) {
+                        if (value != null &&
+                            value.isNotEmpty &&
+                            value.length < 6) {
                           return 'Password must be at least 6 characters';
                         }
                         return null;
@@ -140,7 +150,12 @@ class CreateUserScreen extends StatelessWidget {
                       obscureText: true,
                       controller: cubit.confirmPasswordController,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (state.isEditing &&
+                            (value == null || value.isEmpty)) {
+                          return null;
+                        }
+                        if (!state.isEditing &&
+                            (value == null || value.isEmpty)) {
                           return 'Confirm Password is required';
                         }
                         if (value != cubit.passwordController.text) {
@@ -230,18 +245,21 @@ class CreateUserScreen extends StatelessWidget {
                     LabeledImageSlot(
                       label: l10n.translate('profileImage'),
                       file: state.profileImage,
+                      imageUrl: state.profileImageUrl,
                       onTap: () => _showImageSourceSheet(context, 'profile'),
                     ),
                     gap(16),
                     LabeledImageSlot(
                       label: l10n.translate('idImage'),
                       file: state.idImage,
+                      imageUrl: state.idImageUrl,
                       onTap: () => _showImageSourceSheet(context, 'id'),
                     ),
                     gap(16),
                     LabeledImageSlot(
                       label: 'Passport Picture',
                       file: state.passportImage,
+                      imageUrl: state.passportImageUrl,
                       onTap: () => _showImageSourceSheet(context, 'passport'),
                     ),
                     gap(24),
@@ -254,7 +272,14 @@ class CreateUserScreen extends StatelessWidget {
                               ? null
                               : () {
                                   if (_formKey.currentState!.validate()) {
-                                    if (state.profileImage == null) {
+                                    final hasProfileImage =
+                                        state.profileImage != null ||
+                                            (state.isEditing &&
+                                                state.profileImageUrl != null &&
+                                                state.profileImageUrl!
+                                                    .isNotEmpty);
+
+                                    if (!hasProfileImage) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
                                         const SnackBar(
@@ -263,7 +288,7 @@ class CreateUserScreen extends StatelessWidget {
                                       );
                                       return;
                                     }
-                                    cubit.createUser();
+                                    cubit.submitForm();
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -289,9 +314,15 @@ class CreateUserScreen extends StatelessWidget {
                                     color: Colors.white,
                                   ),
                                 )
-                              : const Icon(Icons.person_add_alt_1, size: 18),
+                              : Icon(
+                                  state.isEditing
+                                      ? Icons.save_as_outlined
+                                      : Icons.person_add_alt_1,
+                                  size: 18),
                           label: Text(
-                            l10n.translate('createUserBtn'),
+                            state.isEditing
+                                ? 'تحديث البيانات' // Localize later or use if available
+                                : l10n.translate('createUserBtn'),
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,

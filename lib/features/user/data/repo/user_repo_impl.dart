@@ -65,4 +65,15 @@ class UserRepoImpl implements UserRepo {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateUser(
+      int id, Map<String, dynamic> userData) async {
+    try {
+      await remoteDataSource.updateUser(id, userData);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

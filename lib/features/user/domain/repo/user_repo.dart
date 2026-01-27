@@ -7,4 +7,6 @@ abstract class UserRepo {
   Future<Either<Failure, void>> syncUsers();
   Future<Either<Failure, void>> createUser(Map<String, dynamic> userData);
   Future<Either<Failure, void>> createClient(Map<String, dynamic> clientData);
+  Future<Either<Failure, void>> updateUser(
+      int id, Map<String, dynamic> userData);
 }

@@ -6,12 +6,14 @@ import 'package:lms/core/theming/styles.dart';
 class LabeledImageSlot extends StatelessWidget {
   final String label;
   final File? file;
+  final String? imageUrl;
   final VoidCallback onTap;
 
   const LabeledImageSlot({
     super.key,
     required this.label,
-    required this.file,
+    this.file,
+    this.imageUrl,
     required this.onTap,
   });
 
@@ -35,22 +37,37 @@ class LabeledImageSlot extends StatelessWidget {
               borderRadius: BorderRadius.circular(6),
             ),
             clipBehavior: Clip.hardEdge,
-            child: file == null
-                ? const Center(
-              child: Icon(
-                Icons.image_outlined,
-                size: 30,
-                color: Color(0xFF9AA6B2),
-              ),
-            )
-                : Image.file(
-              file!,
-              fit: BoxFit.cover,
-              width: double.infinity,
-            ),
+            child: _buildImageContent(),
           ),
         ),
       ],
     );
+  }
+
+  Widget _buildImageContent() {
+    if (file != null) {
+      return Image.file(
+        file!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+      );
+    } else if (imageUrl != null && imageUrl!.isNotEmpty) {
+      return Image.network(
+        imageUrl!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        errorBuilder: (_, __, ___) => const Center(
+          child: Icon(Icons.broken_image, color: Colors.grey),
+        ),
+      );
+    } else {
+      return const Center(
+        child: Icon(
+          Icons.image_outlined,
+          size: 30,
+          color: Color(0xFF9AA6B2),
+        ),
+      );
+    }
   }
 }

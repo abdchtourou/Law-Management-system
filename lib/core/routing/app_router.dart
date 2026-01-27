@@ -6,6 +6,7 @@ import 'package:lms/features/user/presentation/cubit/create_client_cubit.dart';
 import 'package:lms/features/user/presentation/cubit/user_management_cubit.dart';
 import 'package:lms/features/user/presentation/screen/create_user_screen.dart';
 import 'package:lms/features/user/presentation/screen/user_profile.dart';
+import 'package:lms/features/auth/data/models/user_model.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/home/presentation/screen/main_screen.dart';
@@ -29,9 +30,16 @@ class AppRouter {
           builder: (_) => const UserProfileScreen(),
         );
       case Routes.createUser:
+        final user = settings.arguments as User?;
         return MaterialPageRoute(
           builder: (_) => BlocProvider<CreateUserCubit>(
-            create: (context) => sl<CreateUserCubit>(),
+            create: (context) {
+              final cubit = sl<CreateUserCubit>();
+              if (user != null) {
+                cubit.initializeForEdit(user);
+              }
+              return cubit;
+            },
             child: CreateUserScreen(),
           ),
         );
