@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lms/core/routing/routes.dart';
+import 'package:lms/features/task/presentation/cubit%20/taskType/task_type_cubit.dart';
+import 'package:lms/features/task/presentation/cubit%20/taskType/task_type_state.dart';
+import 'package:lms/features/task/presentation/screen/create_task_screen.dart';
+import 'package:lms/features/task/presentation/screen/task_type_screen.dart';
 import 'package:lms/features/user/presentation/cubit/create_user_cubit.dart';
 import 'package:lms/features/user/presentation/cubit/create_client_cubit.dart';
 import 'package:lms/features/user/presentation/cubit/user_management_cubit.dart';
@@ -61,6 +65,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const CreateLegalCaseScreen());
       case Routes.legalCaseManagement:
         return MaterialPageRoute(builder: (_) => const CasesManagementScreen());
+      case Routes.taskType:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                  create: (context) => TaskTypeCubit(),
+                  child: TaskTypeScreen(),
+                ));
 
       default:
         return null;

@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lms/core/theming/styles.dart';
 
+import '../../../../core/widgets/labled_image_slot.dart';
 import '../widgets/description_field.dart';
 import '../widgets/user_drop_down.dart';
 
@@ -12,6 +16,52 @@ class CreateLegalCaseScreen extends StatefulWidget {
 }
 
 class _CreateLegalCaseScreenState extends State<CreateLegalCaseScreen> {
+  late final TextEditingController _outsideUserController;
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _attachmentFile;
+
+  @override
+  void initState() {
+    super.initState();
+    _outsideUserController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _outsideUserController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showAttachmentPicker() async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: const Text('اختيار من المعرض'),
+              onTap: () => Navigator.pop(context, ImageSource.gallery),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: const Text('التقاط صورة'),
+              onTap: () => Navigator.pop(context, ImageSource.camera),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (source == null) return;
+
+    final picked = await _imagePicker.pickImage(source: source, imageQuality: 85);
+    if (picked != null) {
+      setState(() => _attachmentFile = File(picked.path));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     const bg = Color(0xFFF5F6F7);
@@ -61,9 +111,9 @@ class _CreateLegalCaseScreenState extends State<CreateLegalCaseScreen> {
             children: [
               _Labeled(' المعرف ( رقم القضية )', child: TextField(decoration: deco('محمد سعيد'))),
               gap(),
-              const UsersDropDown(label: 'الجهة الرسمية',),
+              const UsersDropDown(label: 'الجهة الرسمية',showAddButton: true,),
               gap(),
-              const UsersDropDown(label: 'اسم الموكل',),
+              const UsersDropDown(label: 'اسم الموكل',showAddButton: true,),
               gap(),
               _Labeled('رقم الاساس', child: TextField(decoration: deco('يوم/شهر/سنة'))),
               gap(),
@@ -73,11 +123,26 @@ class _CreateLegalCaseScreenState extends State<CreateLegalCaseScreen> {
               const UsersDropDown(label: ' اسماء المحامين',),
 
               gap(),
+              _Labeled(
+                'مستخدمين (من خارج النظام)',
+                child: TextField(
+                  controller: _outsideUserController,
+                  decoration: deco('اكتب اسم المستخدم'),
+                ),
+              ),
+
+              gap(),
               _Labeled('قرار الفصل', child: TextField(decoration: deco('سوريا'))),
               gap(),
               _Labeled('تاريخ الفصل', child: TextField(decoration: deco('يوم/شهر/سنة'))),
               gap(16),
-              const DescriptionField(),
+               DescriptionField(controller: TextEditingController(),),
+              gap(16),
+              LabeledImageSlot(
+                label: 'المرفقات',
+                file: _attachmentFile,
+                onTap: _showAttachmentPicker,
+              ),
               gap(16),
               Center(
                 child: SizedBox(
@@ -131,6 +196,4 @@ class _Labeled extends StatelessWidget {
     );
   }
 }
-
-
 

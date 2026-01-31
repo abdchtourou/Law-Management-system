@@ -120,7 +120,6 @@ class AppSideDrawer extends StatelessWidget {
                         .translate('userManagement'),
                     icon: groupSvg,
                     onTap: () {
-                      print('jhsadlkhjs');
                       context.pushNamed(Routes.userManagement);
                     },
                   ),
@@ -158,7 +157,11 @@ class AppSideDrawer extends StatelessWidget {
                   _LineItem(
                       title: AppLocalizations.of(context)!
                           .translate('createTaskTypes'),
-                      icon: folderOpenSvg),
+                      icon: folderOpenSvg,
+                    onTap: (){
+                        context.pushNamed(Routes.taskType);
+                    },
+                  ),
                   _LineItem(
                       title: AppLocalizations.of(context)!
                           .translate('assignTasks'),

@@ -1,13 +1,32 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theming/styles.dart';
 
-class UsersDropDown extends StatefulWidget {
-  const UsersDropDown({super.key, required this.label});
-  final String label ;
+/// Item for [UsersDropDown]. Use [id] as value and [name] for display.
+class UserDropDownItem {
+  final String id;
+  final String name;
+  const UserDropDownItem({required this.id, required this.name});
+}
 
+class UsersDropDown extends StatefulWidget {
+  const UsersDropDown({
+    super.key,
+    required this.label,
+    this.items = const [],
+    this.value,
+    this.onChanged,
+    this.hint = 'نص تلميحي',
+    this.showAddButton = false,
+  });
+
+  final String label;
+  final List<UserDropDownItem> items;
+  final String? value;
+  final ValueChanged<String?>? onChanged;
+  final String hint;
+  final bool showAddButton;
 
   @override
   State<UsersDropDown> createState() => _UsersDropDownState();
@@ -17,14 +36,22 @@ class _UsersDropDownState extends State<UsersDropDown>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _expandAnimation;
+  late final ScrollController _scrollController;
 
   bool _isExpanded = false;
   int? _selectedIndex;
-  final int itemsCount = 8;
+
+  int get _selectedIndexFromValue {
+    if (widget.value == null || widget.items.isEmpty) return -1;
+    final i = widget.items.indexWhere((e) => e.id == widget.value);
+    return i >= 0 ? i : -1;
+  }
 
   @override
   void initState() {
     super.initState();
+    final idx = _selectedIndexFromValue;
+    _selectedIndex = idx >= 0 ? idx : null;
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
@@ -33,10 +60,21 @@ class _UsersDropDownState extends State<UsersDropDown>
       parent: _controller,
       curve: Curves.easeInOut,
     );
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void didUpdateWidget(UsersDropDown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value || oldWidget.items != widget.items) {
+      final idx = _selectedIndexFromValue;
+      _selectedIndex = idx >= 0 ? idx : null;
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -57,11 +95,8 @@ class _UsersDropDownState extends State<UsersDropDown>
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-
-
       children: [
-        Text(widget.label,
-            style: TextStyles.font14BlackBold),
+        Text(widget.label, style: TextStyles.font14BlackBold),
         10.verticalSpace,
         // ================== الهيدر ==================
         GestureDetector(
@@ -77,11 +112,14 @@ class _UsersDropDownState extends State<UsersDropDown>
             child: Row(
               children: [
                 Text(
-                  'نص تنبيهي',
+                  _selectedIndex != null &&
+                          _selectedIndex! >= 0 &&
+                          _selectedIndex! < widget.items.length
+                      ? widget.items[_selectedIndex!].name
+                      : widget.hint,
                   style: TextStyles.font12AccentMedium,
                 ),
                 const Spacer(),
-
                 AnimatedRotation(
                   turns: _isExpanded ? 0.5 : 0.0, // دوران 180°
                   duration: const Duration(milliseconds: 250),
@@ -112,6 +150,7 @@ class _UsersDropDownState extends State<UsersDropDown>
   }
 
   Widget _buildDropdownBody() {
+    final itemCount = widget.items.length + (widget.showAddButton ? 1 : 0);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -122,15 +161,16 @@ class _UsersDropDownState extends State<UsersDropDown>
         height: 260,
         child: Scrollbar(
           thumbVisibility: true,
+          controller: _scrollController,
           child: ListView.builder(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(vertical: 10),
-            itemCount: itemsCount + 1, // +1 لزر إضافة مستخدم
+            itemCount: itemCount,
             itemBuilder: (context, index) {
-              // أول عنصر = زر إضافة مستخدم
-              if (index == 0) {
+              if (widget.showAddButton && index == 0) {
                 return Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(6),
                     onTap: () {
@@ -161,26 +201,28 @@ class _UsersDropDownState extends State<UsersDropDown>
                 );
               }
 
-              // باقي العناصر = "اختيار"
-              final itemIndex = index - 1;
+              final itemIndex = widget.showAddButton ? index - 1 : index;
               final isSelected = itemIndex == _selectedIndex;
+              final item = widget.items[itemIndex];
 
               return InkWell(
-                onTap: () => setState(() => _selectedIndex = itemIndex),
+                onTap: () {
+                  setState(() => _selectedIndex = itemIndex);
+                  widget.onChanged?.call(item.id);
+                },
                 child: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Row(
                     children: [
-                      const Text(
-                        'إختيار',
-                        style: TextStyle(
+                      Text(
+                        item.name,
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
                       const Spacer(),
-
                       if (isSelected)
                         const Icon(Icons.check, size: 18)
                       else

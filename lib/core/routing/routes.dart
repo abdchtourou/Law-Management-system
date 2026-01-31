@@ -7,4 +7,6 @@ class Routes {
   static const String userManagement="/userManagement";
   static const String createLegalCase="/createLegalCase";
   static const String legalCaseManagement="/legalCaseManagement";
+  static const String taskType='/taskType';
+  static const String createTask='/createTask';
 }

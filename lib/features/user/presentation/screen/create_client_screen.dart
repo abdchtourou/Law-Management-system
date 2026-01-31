@@ -12,7 +12,8 @@ class CreateClientScreen extends StatelessWidget {
   const CreateClientScreen({super.key});
 
   Future<void> _pickImage(BuildContext context,
-      {required String imageType}) async {
+      {required String imageType})
+  async {
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
       builder: (_) => SafeArea(

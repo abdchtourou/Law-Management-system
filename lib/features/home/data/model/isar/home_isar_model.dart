@@ -28,8 +28,7 @@ class HomeIsarModel {
   }
 
   static HomeIsarModel fromEntity(HomeModel model,
-      {String userId = 'currentUser'})
-  {
+      {String userId = 'currentUser'}) {
     return HomeIsarModel()
       ..userId = userId
       ..legalCasesStats = model.legalCasesStats != null
@@ -57,18 +56,18 @@ class LegalCasesStatsEmbedded {
   int? open;
   int? resolved;
 
-
-  LegalCasesStats toEntity() =>
-      LegalCasesStats(total: total, completionRate: completionRate, open: open,resolved: resolved);
+  LegalCasesStats toEntity() => LegalCasesStats(
+      total: total,
+      completionRate: completionRate,
+      open: open,
+      resolved: resolved);
 
   static LegalCasesStatsEmbedded fromEntity(LegalCasesStats entity) =>
       LegalCasesStatsEmbedded()
         ..total = entity.total
         ..completionRate = entity.completionRate
-      ..open=entity.open
-  ..resolved=entity.resolved;
-
-
+        ..open = entity.open
+        ..resolved = entity.resolved;
 }
 
 @embedded

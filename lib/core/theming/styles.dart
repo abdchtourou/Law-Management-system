@@ -49,10 +49,16 @@ class TextStyles {
     fontSize: 10.sp,
     color: Colors.black,
     fontWeight: FontWeightHelper.medium,
-  ); static TextStyle font10BlackBold = TextStyle(
+  );
+  static TextStyle font10BlackBold = TextStyle(
     fontSize: 10.sp,
     color: Colors.black,
     fontWeight: FontWeightHelper.bold,
+  );
+  static TextStyle font28BlackExtraBold = TextStyle(
+    color: Colors.black,
+    fontSize: 28.sp,
+    fontWeight: FontWeightHelper.extraBold,
   );
 
 }

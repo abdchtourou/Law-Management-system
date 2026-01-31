@@ -2,14 +2,15 @@
 import 'package:flutter/material.dart';
 
 class DescriptionField extends StatefulWidget {
-  const DescriptionField({super.key});
+  const DescriptionField({super.key, required this.controller});
+  final TextEditingController controller;
 
   @override
   State<DescriptionField> createState() => _DescriptionFieldState();
 }
 
 class _DescriptionFieldState extends State<DescriptionField> {
-  final _controller = TextEditingController();
+
   final int _maxLength = 200;
 
   @override
@@ -24,7 +25,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
               maxHeight: 200, // force TextField height
             ),
             child: TextField(
-              controller: _controller,
+              controller: widget.controller,
               maxLines: null,
               expands: true,
               textAlignVertical: TextAlignVertical.top, // <<< ADD THIS
@@ -56,7 +57,7 @@ class _DescriptionFieldState extends State<DescriptionField> {
             top: 10,
             left: 12,
             child: Text(
-              '$_maxLength/${_controller.text.length}',
+              '$_maxLength/${widget.controller.text.length}',
               style: const TextStyle(color: Colors.grey),
             ),
           ),
